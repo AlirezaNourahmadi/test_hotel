@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block title %}
+  رزروهای من
+{% endblock %}
+
+{% block content %}
+  <h2>رزروهای من</h2>
+
+  {% if bookings %}
+    <ul>
+      {% for booking in bookings %}
+        <li>
+          <a href="{% url 'booking_detail' booking.id %}">اتاق {{ booking.room.number }} - {{ booking.check_in }} تا {{ booking.check_out }}</a>
+          | <a href="{% url 'cancel_booking' booking.id %}">لغو</a>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>شما هنوز هیچ رزروی انجام نداده‌اید.</p>
+  {% endif %}
+{% endblock %}

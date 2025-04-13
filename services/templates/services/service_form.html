@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block title %}فرم سرویس{% endblock %}
+
+{% block content %}
+  <h2>📝 فرم سرویس</h2>
+  <form method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">ذخیره</button>
+  </form>
+  <a href="{% url 'service_list' %}">⬅️ برگشت</a>
+{% endblock %}

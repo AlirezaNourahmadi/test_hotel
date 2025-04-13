@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block title %}حذف سرویس{% endblock %}
+
+{% block content %}
+  <h2>⚠️ حذف سرویس</h2>
+  <p>آیا مطمئنی که می‌خوای این سرویس رو حذف کنی؟</p>
+  <form method="POST">
+    {% csrf_token %}
+    <button type="submit">🗑 بله، حذف کن</button>
+    <a href="{% url 'service_list' %}">❌ نه، برگشت</a>
+  </form>
+{% endblock %}

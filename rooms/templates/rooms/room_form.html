@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block title %}فرم اتاق{% endblock %}
+
+{% block content %}
+  <h2>📝 {{ form.instance.pk|yesno:"ویرایش اتاق,ایجاد اتاق جدید" }}</h2>
+
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+
+    <button type="submit">💾 ذخیره</button>
+    <a href="{% url 'room_list' %}">❌ انصراف</a>
+  </form>
+{% endblock %}

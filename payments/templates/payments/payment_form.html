@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block title %}پرداخت رزرو{% endblock %}
+
+{% block content %}
+<h2>پرداخت برای رزرو اتاق {{ booking.room.number }}</h2>
+
+<p>مبلغ قابل پرداخت: {{ booking.room.price_per_night }} تومان</p>
+
+<form method="POST">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit">پرداخت</button>
+</form>
+
+<a href="{% url 'booking_detail' booking.id %}">بازگشت</a>
+{% endblock %}

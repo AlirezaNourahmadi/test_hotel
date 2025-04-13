@@ -1,9 +1,8 @@
-from django.shortcuts import render
-
-# Create your views here.
-
-def home_view(request):
+def role_context(request):
     is_manager = False
     if request.user.is_authenticated and request.user.is_staff:
         is_manager = request.user.groups.filter(name='manager').exists()
-    return render(request, 'Home/home.html', {'is_manager': is_manager})
+
+    return {
+        'is_manager': is_manager
+    }

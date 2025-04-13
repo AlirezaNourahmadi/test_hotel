@@ -37,6 +37,15 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "Home.apps.HomeConfig",
+    "payments",
+    "reviews",
+    "rooms",
+    "services",
+    "staff",
+    "accounts",
+    "bookings",
+    
 ]
 
 MIDDLEWARE = [
@@ -54,13 +63,14 @@ ROOT_URLCONF = "HotelMain.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [BASE_DIR/"templates"],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
+                "accounts.context_processors.role_context",
             ],
         },
     },
@@ -120,3 +130,9 @@ STATIC_URL = "static/"
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+AUTH_USER_MODEL = 'accounts.Guest'
+
+# مسیر لاگین و ریدایرکت پیش‌فرض بعد از لاگین
+LOGIN_URL = '/accounts/login/'  # آدرس view لاگین (یا همونی که تو پروژه‌ت هست)
+LOGIN_REDIRECT_URL = '/'  # بعد از لاگین موفق، کجا بره

@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block title %}لیست اتاق‌ها{% endblock %}
+
+{% block content %}
+  <h2>📄 لیست اتاق‌ها</h2>
+
+  {% if is_manager %}
+    <a href="{% url 'room_create' %}">➕ ایجاد اتاق جدید</a>
+  {% endif %}
+
+  <ul>
+    {% for room in rooms %}
+      <li>
+        <strong>اتاق شماره {{ room.number }}</strong> - {{ room.get_room_type_display }}
+
+        <a href="{% url 'room_detail' room.pk %}">🔍 مشاهده</a>
+
+        {% if is_manager %}
+          | <a href="{% url 'room_update' room.pk %}">✏️ ویرایش</a>
+          | <a href="{% url 'room_delete' room.pk %}">🗑️ حذف</a>
+        {% endif %}
+      </li>
+    {% endfor %}
+  </ul>
+{% endblock %}

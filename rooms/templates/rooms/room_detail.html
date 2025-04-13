@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block title %}جزئیات اتاق{% endblock %}
+
+{% block content %}
+<h2>اتاق {{ room.number }}</h2>
+
+<p><strong>نوع:</strong> {{ room.get_room_type_display }}</p>
+<p><strong>قیمت هر شب:</strong> {{ room.price_per_night }} تومان</p>
+<p><strong>ظرفیت:</strong> {{ room.capacity }}</p>
+<p><strong>وضعیت:</strong>
+  {% if room.is_available %}
+    <span style="color:green">در دسترس</span>
+  {% else %}
+    <span style="color:red">رزرو شده</span>
+  {% endif %}
+</p>
+
+{% if user.is_authenticated and room.is_available %}
+  <a href="{% url 'book_room' room.id %}"><button>رزرو این اتاق</button></a>
+{% elif not user.is_authenticated %}
+  <p>برای رزرو، ابتدا <a href="{% url 'login' %}">وارد شوید</a>.</p>
+{% else %}
+  <p style="color:red;">این اتاق در حال حاضر رزرو شده است.</p>
+{% endif %}
+
+<br>
+<a href="{% url 'room_list' %}">← بازگشت به لیست</a>
+{% endblock %}

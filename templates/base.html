@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="fa">
+  <head>
+    <meta charset="UTF-8" />
+    <title>
+      {% block title %}
+        سیستم هتل
+      {% endblock %}
+    </title>
+  </head>
+  <body>
+    <header>
+      <h1>🌟 سیستم مدیریت هتل</h1>
+
+      <nav>
+        <ul>
+          <li>
+            <a href="{% url 'room_list' %}">🏨 لیست اتاق‌ها</a>
+          </li>
+          {% if user.is_authenticated and user.is_staff and user.groups.first.name == 'manager' %}
+            <li>
+              <a href="{% url 'service_list' %}">🧰 مدیریت سرویس‌ها</a>
+            </li>
+          {% endif %}
+          {% if is_manager %}
+            <li>
+              <a href="{% url 'room_list' %}">🛠️ مدیریت اتاق‌ها</a>
+            </li>
+          {% endif %}
+
+          {% if user.is_authenticated %}
+            <li>
+              <a href="{% url 'my_bookings' %}">📒 رزروهای من</a>
+            </li>
+            <li>👋 سلام {{ user.username }}</li>
+            <li>
+              <a href="{% url 'logout' %}">🚪 خروج</a>
+            </li>
+          {% else %}
+            <li>
+              <a href="{% url 'login' %}">🔐 ورود</a>
+            </li>
+            <li>
+              <a href="{% url 'register' %}">📝 ثبت‌نام</a>
+            </li>
+          {% endif %}
+        </ul>
+      </nav>
+
+      <hr />
+    </header>
+
+    <main>
+      {% block content %}
+        <!-- محتوای هر صفحه اینجا نمایش داده می‌شه -->
+      {% endblock %}
+    </main>
+
+    <footer>
+      <hr />
+      <p>© 2025 - سیستم هتل Django ساخته شده توسط علیرضا نوراحمدی</p>
+    </footer>
+  </body>
+</html>

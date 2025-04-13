@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block title %}لیست اتاق‌ها{% endblock %}
+
+{% block content %}
+    <h2>🏨 لیست عمومی اتاق‌ها</h2>
+
+    <ul>
+        {% for room in rooms %}
+            <li>
+                <a href="{% url 'room_detail' room.pk %}">{{ room.number }} - {{ room.room_type }}</a>
+                ({{ room.price_per_night }} تومان)
+            </li>
+        {% empty %}
+            <li>هیچ اتاقی موجود نیست.</li>
+        {% endfor %}
+    </ul>
+{% endblock %}

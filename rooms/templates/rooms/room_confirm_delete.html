@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block title %}حذف اتاق{% endblock %}
+{% block content %}
+  <h2>❗ آیا مطمئن هستید که می‌خواهید این اتاق را حذف کنید؟</h2>
+
+  <p><strong>شماره اتاق:</strong> {{ room.number }}</p>
+  <p><strong>نوع:</strong> {{ room.get_room_type_display }}</p>
+
+  <form method="post">
+    {% csrf_token %}
+    <button type="submit">🗑️ بله، حذف شود</button>
+    <a href="{% url 'room_list' %}">❌ انصراف</a>
+  </form>
+{% endblock %}

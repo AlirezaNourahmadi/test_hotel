@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block title %}
+  داشبورد پرسنل
+{% endblock %}
+
+{% block content %}
+  <h2>🧰 داشبورد پرسنل</h2>
+  <p>سلام {{ user.username }} عزیز!</p>
+
+  <h3>🛏️ لیست اتاق‌های رزرو شده:</h3>
+  <h3>🧰 سرویس‌های من</h3>
+  <ul>
+    {% for service in assigned_services %}
+      <li>
+        🛏️ اتاق {{ service.room.number }} | سرویس: {{ service.get_service_type_display }} | وضعیت:{% if service.done %}
+          ✅ انجام شده
+        {% else %}
+          ⏳ در حال انجام
+        {% endif %}
+      </li>
+    {% empty %}
+      <li>سرویسی به شما اختصاص داده نشده.</li>
+    {% endfor %}
+  </ul>
+  <ul>
+    {% for booking in bookings %}
+      <li>اتاق شماره {{ booking.room.number }} | مهمان: {{ booking.guest.username }} | تاریخ ورود: {{ booking.check_in }} | خروج: {{ booking.check_out }}</li>
+    {% empty %}
+      <li>هیچ رزروی ثبت نشده</li>
+    {% endfor %}
+  </ul>
+{% endblock %}

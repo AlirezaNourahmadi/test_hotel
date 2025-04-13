@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block title %}
+  جزئیات رزرو
+{% endblock %}
+
+{% block content %}
+  <h2>جزئیات رزرو</h2>
+
+  <p>
+    <strong>اتاق:</strong> {{ booking.room.number }}
+  </p>
+  <p>
+    <strong>نوع اتاق:</strong> {{ booking.room.get_room_type_display }}
+  </p>
+  <p>
+    <strong>قیمت:</strong> {{ booking.room.price_per_night }} تومان
+  </p>
+  <p>
+    <strong>تاریخ ورود:</strong> {{ booking.check_in }}
+  </p>
+  <p>
+    <strong>تاریخ خروج:</strong> {{ booking.check_out }}
+  </p>
+  <p>
+    <strong>تاریخ رزرو:</strong> {{ booking.created_at }}
+  </p>
+  {% if not booking.payment %}
+    <a href="{% url 'make_payment' booking.id %}"><button>پرداخت</button></a>
+  {% else %}
+    <p style="color:green;">✅ این رزرو پرداخت شده است.</p>
+  {% endif %}
+  <a href="{% url 'my_bookings' %}">← بازگشت به رزروهای من</a>
+{% endblock %}

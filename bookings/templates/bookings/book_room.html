@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block title %}رزرو اتاق{% endblock %}
+
+{% block content %}
+<h2>رزرو اتاق {{ room.number }}</h2>
+
+<form method="POST">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit">رزرو کن</button>
+</form>
+
+<a href="{% url 'room_detail' room.id %}">← بازگشت به جزئیات اتاق</a>
+{% endblock %}

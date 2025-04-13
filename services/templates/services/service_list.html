@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block title %}لیست سرویس‌ها{% endblock %}
+
+{% block content %}
+  <h2>🧰 لیست سرویس‌ها</h2>
+  <a href="{% url 'service_create' %}">➕ ثبت سرویس جدید</a>
+  <ul>
+    {% for service in services %}
+      <li>
+        🛏️ اتاق {{ service.room.number }} | سرویس: {{ service.get_service_type_display }} |
+        {% if service.assigned_to %}
+          پرسنل: {{ service.assigned_to.username }} |
+        {% endif %}
+        وضعیت: {% if service.done %}✅ انجام شده{% else %}⏳ در انتظار{% endif %} |
+        <a href="{% url 'service_update' service.pk %}">✏️</a> |
+        <a href="{% url 'service_delete' service.pk %}">🗑</a>
+      </li>
+    {% empty %}
+      <li>هیچ سرویسی ثبت نشده.</li>
+    {% endfor %}
+  </ul>
+{% endblock %}
