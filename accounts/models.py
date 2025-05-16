@@ -8,4 +8,4 @@ class Guest(AbstractUser):
     address = models.TextField(null=True, blank=True)
     
     def __str__(self):
-        return f"{self.username} ({self.email})"
+        return f"{self.username} , ({self.email})"

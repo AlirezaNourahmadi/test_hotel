@@ -6,9 +6,9 @@ from django.contrib.auth.decorators import login_required , user_passes_test
 
 # Create your views here.
 def is_manager(user):
-    return user.is_authenticated and user.group.filter(name = "manager").exists()
+    return user.is_authenticated and user.groups.filter(name = "manager").exists()
 
-@user_passes_test
+@user_passes_test(is_manager)
 def service_list_view(request):
     services = Service.objects.select_related("room", "assigned_to").all()
     return render(request,"services/service_list.html",{"services":services})

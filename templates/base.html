@@ -1,64 +1,133 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="fa">
   <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>
       {% block title %}
         سیستم هتل
       {% endblock %}
     </title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}" />
+
+    {% block extra_head %}{% endblock %}
   </head>
   <body>
-    <header>
-      <h1>🌟 سیستم مدیریت هتل</h1>
+    <header class="bg-light p-3 mb-4 border-bottom">
+      <div class="container">
+        <h1 class="h3">🌟 سیستم مدیریت هتل</h1>
 
-      <nav>
-        <ul>
-          <li>
-            <a href="{% url 'room_list' %}">🏨 لیست اتاق‌ها</a>
-          </li>
-          {% if user.is_authenticated and user.is_staff and user.groups.first.name == 'manager' %}
-            <li>
-              <a href="{% url 'service_list' %}">🧰 مدیریت سرویس‌ها</a>
-            </li>
-          {% endif %}
-          {% if is_manager %}
-            <li>
-              <a href="{% url 'room_list' %}">🛠️ مدیریت اتاق‌ها</a>
-            </li>
-          {% endif %}
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+          <div class="container-fluid p-0">
+            <button
+              class="navbar-toggler"
+              type="button"
+              data-bs-toggle="collapse"
+              data-bs-target="#navbarNav"
+              aria-controls="navbarNav"
+              aria-expanded="false"
+              aria-label="Toggle navigation"
+            >
+              <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+              <ul class="navbar-nav">
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'room_list' %}">🏨 لیست اتاق‌ها</a>
+                </li>
+                {% if is_staff %}
+                  <li class="nav-item">
+                    <a class="nav-link" href="{% url 'service_list' %}">🧰 مدیریت سرویس‌ها</a>
+                  </li>
+                {% endif %}
+                {% if user.is_manager %}
+                  <li class="nav-item">
+                    <a class="nav-link" href="{% url 'room_list' %}">🛠️ مدیریت اتاق‌ها</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="{% url 'staff_dashboard' %}">📊 داشبورد مدیریت</a>
+                  </li>
+                {% endif %}
 
-          {% if user.is_authenticated %}
-            <li>
-              <a href="{% url 'my_bookings' %}">📒 رزروهای من</a>
-            </li>
-            <li>👋 سلام {{ user.username }}</li>
-            <li>
-              <a href="{% url 'logout' %}">🚪 خروج</a>
-            </li>
-          {% else %}
-            <li>
-              <a href="{% url 'login' %}">🔐 ورود</a>
-            </li>
-            <li>
-              <a href="{% url 'register' %}">📝 ثبت‌نام</a>
-            </li>
-          {% endif %}
-        </ul>
-      </nav>
-
-      <hr />
+                {% if user.is_authenticated %}
+                  <li class="nav-item">
+                    <a class="nav-link" href="{% url 'my_bookings' %}">📒 رزروهای من</a>
+                  </li>
+                  <li class="nav-item nav-link disabled">👋 سلام {{ user.username }}</li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="{% url 'logout' %}">🚪 خروج</a>
+                  </li>
+                {% else %}
+                  <li class="nav-item">
+                    <a class="nav-link" href="{% url 'login' %}">🔐 ورود</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="{% url 'register' %}">📝 ثبت‌نام</a>
+                  </li>
+                {% endif %}
+              </ul>
+            </div>
+          </div>
+        </nav>
+      </div>
     </header>
 
     <main>
-      {% block content %}
-        <!-- محتوای هر صفحه اینجا نمایش داده می‌شه -->
+      {% block hero %}
+      <section class="hero">
+        <div class="hero-content fade-in-section">
+          <h1>سیستم مدیریت هتل</h1>
+          <p>به بهترین تجربه اقامت خوش آمدید</p>
+          <a href="{% url 'room_list' %}" class="btn btn-primary btn-lg mt-3">رزرو اتاق</a>
+        </div>
+      </section>
       {% endblock %}
+
+      <div class="container mt-4">
+        {% block content %}
+          <!-- محتوای هر صفحه اینجا نمایش داده می‌شه -->
+        {% endblock  %}
+      </div>
     </main>
 
-    <footer>
-      <hr />
+    <footer class="bg-light p-3 mt-4 border-top text-center">
       <p>© 2025 - سیستم هتل Django ساخته شده توسط علیرضا نوراحمدی</p>
     </footer>
+
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+      // Scroll fade-in animation
+      document.addEventListener('DOMContentLoaded', function () {
+        const faders = document.querySelectorAll('.fade-in-section');
+        const appearOptions = {
+          threshold: 0.1,
+          rootMargin: "0px 0px -50px 0px"
+        };
+        const appearOnScroll = new IntersectionObserver(function(entries, appearOnScroll) {
+          entries.forEach(entry => {
+            if (!entry.isIntersecting) {
+              return;
+            } else {
+              entry.target.classList.add('is-visible');
+              appearOnScroll.unobserve(entry.target);
+            }
+          });
+        }, appearOptions);
+
+        faders.forEach(fader => {
+          appearOnScroll.observe(fader);
+        });
+      });
+    </script>
+
+    {% block extra_scripts %}{% endblock %}
   </body>
 </html>
