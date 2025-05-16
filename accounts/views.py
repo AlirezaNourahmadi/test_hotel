@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import login, logout
 from django.contrib.auth.forms import AuthenticationForm
 from .forms import GuestRegistrationForm
-
+from django.contrib.auth.decorators import login_required
 def register_view(request):
     if request.method == 'POST':
         form = GuestRegistrationForm(request.POST)
@@ -29,11 +29,12 @@ def login_view(request):
             request.session['is_manager'] = user.groups.filter(name='manager').exists()
             
             # Redirect based on role
-            if user.is_staff:
-                return redirect('dashboard')
-            elif user.groups.filter(name='manager').exists():
+            if request.session['is_manager']:
                 return redirect('manager_dashboard')
-            return redirect('home')
+            elif request.session['is_staff']:
+                return redirect('staff_dashboard')
+            else:
+                return redirect('guest_dashboard')
     else:
         form = AuthenticationForm()
     return render(request, 'accounts/login.html', {'form': form})
@@ -42,3 +43,16 @@ def login_view(request):
 def logout_view(request):
     logout(request)
     return redirect('home')
+
+
+@login_required
+def manager_dashboard_view(request):
+    return render(request, 'accounts/managerdashboard.html')
+
+@login_required
+def staff_dashboard_view(request):
+    return render(request, 'accounts/staffdashboard.html')
+
+@login_required
+def guest_dashboard_view(request):
+    return render(request, 'accounts/guestdashboard.html')

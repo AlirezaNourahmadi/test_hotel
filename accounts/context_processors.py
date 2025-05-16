@@ -16,4 +16,4 @@ def user_roles(request):
         request.session['is_manager'] = roles['is_manager']
         request.session['is_staff'] = roles['is_staff']
     
-    return roles
+    return {"user_roles":roles}
