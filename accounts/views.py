@@ -26,7 +26,7 @@ def login_view(request):
             
             # Set session variables for roles
             request.session['is_staff'] = user.is_staff
-            request.session['is_manager'] = user.groups.filter(name='manager').exists()
+            request.session['is_manager'] = user.is_manager
             
             # Redirect based on role
             if request.session['is_manager']:
