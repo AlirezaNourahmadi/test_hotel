@@ -1,6 +1,17 @@
 {% extends 'base.html' %}
-{% block title %}پنل کاربر مهمان{% endblock %}
+{% block title %}پنل مهمان{% endblock %}
 {% block content %}
 <h2>👤 داشبورد مهمان</h2>
-<p>شما به عنوان یک کاربر مهمان وارد شده‌اید. می‌توانید رزروهای خود را ببینید یا نظراتتان را ثبت کنید.</p>
+<p>شما به عنوان یک مهمان وارد شده‌اید.</p>
+
+<a href="{% url 'my_bookings' %}">
+  <button style="padding:10px 20px; margin:10px; background-color:#1976d2; color:white; border:none; border-radius:5px;">
+    مشاهده رزروها
+  </button>
+</a>
+<a href="#">
+  <button style="padding:10px 20px; margin:10px; background-color:#388e3c; color:white; border:none; border-radius:5px;">
+    ثبت نظر
+  </button>
+</a>
 {% endblock %}

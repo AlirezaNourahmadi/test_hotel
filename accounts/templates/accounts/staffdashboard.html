@@ -1,7 +1,12 @@
 {% extends 'base.html' %}
-{% block title %}پنل کارکنان{% endblock %}
+{% block title %}پنل کارمند{% endblock %}
 {% block content %}
 <h2>🛎️ داشبورد کارمند</h2>
-<p>شما به عنوان کارمند وارد شده‌اید. می‌توانید وضعیت خدمات را بررسی یا به درخواست‌ها رسیدگی کنید.</p>
-<a href="{% url 'service_list' %}">مدیریت خدمات</a>
+<p>شما به عنوان کارمند وارد شده‌اید.</p>
+
+<a href="{% url 'service_list' %}">
+  <button style="padding:10px 20px; margin:10px; background-color:#f57c00; color:white; border:none; border-radius:5px;">
+    مدیریت خدمات
+  </button>
+</a>
 {% endblock %}
