@@ -1,0 +1,953 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ room.title }} | هتل آسمان{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css" />
+<style>
+  /* Room detail specific styles */
+  .room-gallery {
+    margin-bottom: 2rem;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: var(--shadow-md);
+  }
+  
+  .main-swiper {
+    height: 450px;
+  }
+  
+  .main-swiper .swiper-slide {
+    height: 100%;
+  }
+  
+  .main-swiper .swiper-slide img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  .thumb-swiper {
+    height: 100px;
+    margin-top: 10px;
+  }
+  
+  .thumb-swiper .swiper-slide {
+    opacity: 0.5;
+    height: 100%;
+    cursor: pointer;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 2px solid transparent;
+    transition: var(--transition-normal);
+  }
+  
+  .thumb-swiper .swiper-slide img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  .thumb-swiper .swiper-slide-thumb-active {
+    opacity: 1;
+    border-color: var(--primary-color);
+  }
+  
+  .fullscreen-button {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    z-index: 10;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: var(--transition-normal);
+  }
+  
+  .fullscreen-button:hover {
+    background-color: var(--primary-color);
+  }
+  
+  .room-header {
+    margin-bottom: 2rem;
+    position: relative;
+  }
+  
+  .room-price-tag {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 0.5rem 1.5rem;
+    border-radius: 30px;
+    font-weight: 600;
+    display: inline-block;
+    margin-bottom: 1rem;
+  }
+  
+  .room-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .room-meta-item {
+    display: flex;
+    align-items: center;
+    font-size: 1rem;
+    color: var(--gray-color);
+  }
+  
+  .room-meta-item i {
+    color: var(--secondary-color);
+    margin-left: 0.5rem;
+    width: 18px;
+    text-align: center;
+  }
+  
+  .room-description {
+    color: var(--gray-color);
+    line-height: 1.8;
+    margin-bottom: 2rem;
+  }
+  
+  .room-features {
+    margin-bottom: 2rem;
+  }
+  
+  .feature-title {
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    position: relative;
+    padding-bottom: 0.5rem;
+  }
+  
+  .feature-title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 30px;
+    height: 2px;
+    background-color: var(--secondary-color);
+  }
+  
+  .features-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+  
+  .feature-item {
+    display: flex;
+    align-items: center;
+    background-color: #f8f9fa;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    margin-bottom: 0.5rem;
+  }
+  
+  .feature-item i {
+    color: var(--primary-color);
+    margin-left: 0.5rem;
+  }
+  
+  .booking-form {
+    background-color: white;
+    border-radius: 15px;
+    padding: 2rem;
+    box-shadow: var(--shadow-md);
+    height: 100%;
+  }
+  
+  .form-title {
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    position: relative;
+    padding-bottom: 0.5rem;
+  }
+  
+  .form-title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 30px;
+    height: 2px;
+    background-color: var(--secondary-color);
+  }
+  
+  .price-calculator {
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-top: 1.5rem;
+  }
+  
+  .price-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+  }
+  
+  .price-total {
+    font-weight: 700;
+    color: var(--primary-color);
+    font-size: 1.2rem;
+    border-top: 1px solid #dee2e6;
+    padding-top: 0.5rem;
+    margin-top: 0.5rem;
+  }
+  
+  .reviews-section {
+    margin-top: 4rem;
+  }
+  
+  .review-card {
+    background-color: white;
+    border-radius: 15px;
+    padding: 1.5rem;
+    box-shadow: var(--shadow-sm);
+    margin-bottom: 1.5rem;
+  }
+  
+  .review-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+  }
+  
+  .reviewer-info {
+    display: flex;
+    align-items: center;
+  }
+  
+  .reviewer-img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    margin-left: 1rem;
+    object-fit: cover;
+  }
+  
+  .rating {
+    color: var(--secondary-color);
+  }
+  
+  .review-date {
+    color: var(--gray-color);
+    font-size: 0.9rem;
+  }
+  
+  .review-content {
+    color: var(--gray-color);
+    line-height: 1.7;
+  }
+  
+  .review-form {
+    background-color: white;
+    border-radius: 15px;
+    padding: 2rem;
+    box-shadow: var(--shadow-md);
+    margin-top: 2rem;
+  }
+  
+  .star-rating {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: flex-end;
+  }
+  
+  .star-rating input {
+    display: none;
+  }
+  
+  .star-rating label {
+    cursor: pointer;
+    font-size: 1.5rem;
+    color: #ddd;
+    padding: 0 0.1rem;
+  }
+  
+  .star-rating label:hover,
+  .star-rating label:hover ~ label,
+  .star-rating input:checked ~ label {
+    color: var(--secondary-color);
+  }
+  
+  /* Fullscreen gallery */
+  .gallery-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.9);
+    z-index: 9999;
+    display: none;
+  }
+  
+  .gallery-overlay.active {
+    display: block;
+  }
+  
+  .fullscreen-swiper-container {
+    height: 100%;
+    width: 100%;
+  }
+  
+  .fullscreen-swiper {
+    width: 100%;
+    height: 100%;
+  }
+  
+  .fullscreen-swiper .swiper-slide {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .fullscreen-swiper .swiper-slide img {
+    max-width: 90%;
+    max-height: 90%;
+    object-fit: contain;
+  }
+  
+  .close-fullscreen {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    color: white;
+    font-size: 1.8rem;
+    cursor: pointer;
+    z-index: 10;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(0, 0, 0, 0.5);
+    border-radius: 50%;
+  }
+  
+  .close-fullscreen:hover {
+    color: var(--secondary-color);
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  <div class="row">
+    <div class="col-lg-8">
+      <!-- Room Gallery -->
+      <div class="room-gallery">
+        <div class="swiper main-swiper">
+          <div class="swiper-wrapper">
+            <div class="swiper-slide">
+              <img src="{% static 'images/room-detail-1.jpg' %}" alt="تصویر اتاق">
+            </div>
+            <div class="swiper-slide">
+              <img src="{% static 'images/room-detail-2.jpg' %}" alt="تصویر اتاق">
+            </div>
+            <div class="swiper-slide">
+              <img src="{% static 'images/room-detail-3.jpg' %}" alt="تصویر اتاق">
+            </div>
+            <div class="swiper-slide">
+              <img src="{% static 'images/room-detail-4.jpg' %}" alt="تصویر اتاق">
+            </div>
+            <div class="swiper-slide">
+              <img src="{% static 'images/room-detail-5.jpg' %}" alt="تصویر اتاق">
+            </div>
+          </div>
+          <div class="swiper-button-next"></div>
+          <div class="swiper-button-prev"></div>
+          <div class="fullscreen-button" id="fullscreen-btn">
+            <i class="fas fa-expand"></i>
+          </div>
+        </div>
+        <div thumbsSlider="" class="swiper thumb-swiper">
+          <div class="swiper-wrapper">
+            <div class="swiper-slide">
+              <img src="{% static 'images/room-detail-1.jpg' %}" alt="تصویر اتاق">
+            </div>
+            <div class="swiper-slide">
+              <img src="{% static 'images/room-detail-2.jpg' %}" alt="تصویر اتاق">
+            </div>
+            <div class="swiper-slide">
+              <img src="{% static 'images/room-detail-3.jpg' %}" alt="تصویر اتاق">
+            </div>
+            <div class="swiper-slide">
+              <img src="{% static 'images/room-detail-4.jpg' %}" alt="تصویر اتاق">
+            </div>
+            <div class="swiper-slide">
+              <img src="{% static 'images/room-detail-5.jpg' %}" alt="تصویر اتاق">
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Room Info -->
+      <div class="room-header">
+        <div class="room-price-tag">۱,۲۰۰,۰۰۰ تومان / شب</div>
+        <h1 class="mb-2">اتاق دبل لوکس</h1>
+        
+        <div class="room-meta">
+          <div class="room-meta-item">
+            <i class="fas fa-bed"></i> تخت دبل کینگ
+          </div>
+          <div class="room-meta-item">
+            <i class="fas fa-ruler-combined"></i> ۳۵ متر مربع
+          </div>
+          <div class="room-meta-item">
+            <i class="fas fa-users"></i> ظرفیت ۲ نفر
+          </div>
+          <div class="room-meta-item">
+            <i class="fas fa-mountain"></i> منظره شهر
+          </div>
+        </div>
+        
+        <p class="room-description">
+          اتاق دبل لوکس هتل آسمان با منظره زیبای شهر، فضایی دنج و آرام برای استراحت و تجدید قوا ایجاد می‌کند. این اتاق با مساحت ۳۵ متر مربع، مجهز به تخت دبل کینگ، حمام اختصاصی با وان و سرویس فرنگی، اینترنت پرسرعت، میز کار، تلویزیون ال‌سی‌دی با شبکه‌های کابلی، سیستم تهویه مطبوع و گاوصندوق اختصاصی است. 
+          
+          مهمانان می‌توانند از خدمات صبحانه‌ی رایگان و سرویس اتاق ۲۴ ساعته بهره‌مند شوند. این اتاق همچنین دسترسی به امکانات رفاهی هتل شامل استخر، سونا و فیتنس را میسر می‌سازد.
+        </p>
+      </div>
+      
+      <!-- Room Features -->
+      <div class="room-features">
+        <h3 class="feature-title">امکانات و ویژگی‌ها</h3>
+        <div class="features-list">
+          <div class="feature-item">
+            <i class="fas fa-wifi"></i> اینترنت وای-فای رایگان
+          </div>
+          <div class="feature-item">
+            <i class="fas fa-snowflake"></i> تهویه مطبوع
+          </div>
+          <div class="feature-item">
+            <i class="fas fa-tv"></i> تلویزیون ال‌سی‌دی
+          </div>
+          <div class="feature-item">
+            <i class="fas fa-coffee"></i> مینی‌بار
+          </div>
+          <div class="feature-item">
+            <i class="fas fa-lock"></i> گاوصندوق اتاق
+          </div>
+          <div class="feature-item">
+            <i class="fas fa-bath"></i> وان حمام
+          </div>
+          <div class="feature-item">
+            <i class="fas fa-shower"></i> دوش
+          </div>
+          <div class="feature-item">
+            <i class="fas fa-wind"></i> سشوار
+          </div>
+          <div class="feature-item">
+            <i class="fas fa-concierge-bell"></i> سرویس اتاق ۲۴ ساعته
+          </div>
+          <div class="feature-item">
+            <i class="fas fa-utensils"></i> صبحانه رایگان
+          </div>
+          <div class="feature-item">
+            <i class="fas fa-phone-alt"></i> تلفن مستقیم
+          </div>
+          <div class="feature-item">
+            <i class="fas fa-couch"></i> مبلمان راحتی
+          </div>
+        </div>
+      </div>
+      
+      <!-- Reviews Section -->
+      <div class="reviews-section">
+        <h3 class="feature-title">نظرات مهمانان</h3>
+        
+        <!-- Review 1 -->
+        <div class="review-card">
+          <div class="review-header">
+            <div class="reviewer-info">
+              <img src="{% static 'images/user-1.jpg' %}" alt="مهمان" class="reviewer-img">
+              <div>
+                <h5 class="mb-0">علی رضایی</h5>
+                <div class="rating">
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                </div>
+              </div>
+            </div>
+            <div class="review-date">
+              ۱۵ اردیبهشت ۱۴۰۴
+            </div>
+          </div>
+          <div class="review-content">
+            <p>اقامت بسیار خوبی در این اتاق داشتم. تخت راحت، اتاق تمیز و خدمات عالی. منظره شهر از پنجره واقعا زیبا بود. خدمات سرویس اتاق سریع و بی‌نقص بود. قطعا در سفر بعدی به تهران دوباره این هتل را انتخاب می‌کنم.</p>
+          </div>
+        </div>
+        
+        <!-- Review 2 -->
+        <div class="review-card">
+          <div class="review-header">
+            <div class="reviewer-info">
+              <img src="{% static 'images/user-2.jpg' %}" alt="مهمان" class="reviewer-img">
+              <div>
+                <h5 class="mb-0">مریم احمدی</h5>
+                <div class="rating">
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="far fa-star"></i>
+                </div>
+              </div>
+            </div>
+            <div class="review-date">
+              ۲ خرداد ۱۴۰۴
+            </div>
+          </div>
+          <div class="review-content">
+            <p>اتاق بسیار تمیز بود و امکانات خوبی داشت. کارکنان مهربان و کمک‌کننده بودند. تنها مشکل کوچک، صدای کمی بود که از راهرو به اتاق می‌آمد. اما در مجموع تجربه اقامت خوبی بود.</p>
+          </div>
+        </div>
+        
+        <!-- Review 3 -->
+        <div class="review-card">
+          <div class="review-header">
+            <div class="reviewer-info">
+              <img src="{% static 'images/user-3.jpg' %}" alt="مهمان" class="reviewer-img">
+              <div>
+                <h5 class="mb-0">محمد کریمی</h5>
+                <div class="rating">
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star-half-alt"></i>
+                </div>
+              </div>
+            </div>
+            <div class="review-date">
+              ۱۸ فروردین ۱۴۰۴
+            </div>
+          </div>
+          <div class="review-content">
+            <p>اتاق بسیار مدرن و راحت بود. خدمات هتل عالی و صبحانه متنوع و لذیذ. موقعیت هتل برای دسترسی به مراکز تجاری و دیدنی‌های شهر بسیار مناسب است. قیمت نسبت به کیفیت خدمات منصفانه است.</p>
+          </div>
+        </div>
+        
+        <!-- Review Form -->
+        <div class="review-form">
+          <h3 class="form-title">ثبت نظر</h3>
+          <form>
+            <div class="mb-3">
+              <label for="review-title" class="form-label">عنوان نظر</label>
+              <input type="text" class="form-control" id="review-title" placeholder="عنوان نظر خود را وارد کنید">
+            </div>
+            
+            <div class="mb-3">
+              <label class="form-label">امتیاز شما</label>
+              <div class="star-rating">
+                <input type="radio" name="rating" id="star5" value="5">
+                <label for="star5"><i class="fas fa-star"></i></label>
+                <input type="radio" name="rating" id="star4" value="4">
+                <label for="star4"><i class="fas fa-star"></i></label>
+                <input type="radio" name="rating" id="star3" value="3">
+                <label for="star3"><i class="fas fa-star"></i></label>
+                <input type="radio" name="rating" id="star2" value="2">
+                <label for="star2"><i class="fas fa-star"></i></label>
+                <input type="radio" name="rating" id="star1" value="1">
+                <label for="star1"><i class="fas fa-star"></i></label>
+              </div>
+            </div>
+            
+            <div class="mb-3">
+              <label for="review-content" class="form-label">نظر شما</label>
+              <textarea class="form-control" id="review-content" rows="5" placeholder="نظر خود را درباره اقامت در این اتاق بنویسید"></textarea>
+            </div>
+            
+            <button type="submit" class="btn btn-primary">ثبت نظر</button>
+          </form>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Sidebar with Booking Form -->
+    <div class="col-lg-4">
+      <div class="booking-form">
+        <h3 class="form-title">رزرو اتاق</h3>
+        <form id="booking-form">
+          <div class="mb-3">
+            <label for="check-in-date" class="form-label">تاریخ ورود</label>
+            <input type="date" class="form-control" id="check-in-date" required>
+          </div>
+          
+          <div class="mb-3">
+            <label for="check-out-date" class="form-label">تاریخ خروج</label>
+            <input type="date" class="form-control" id="check-out-date" required>
+          </div>
+          
+          <div class="row g-3 mb-3">
+            <div class="col-6">
+              <label for="adults" class="form-label">بزرگسال</label>
+              <select class="form-control" id="adults">
+                <option value="1">۱</option>
+                <option value="2" selected>۲</option>
+              </select>
+            </div>
+            
+            <div class="col-6">
+              <label for="children" class="form-label">کودک</label>
+              <select class="form-control" id="children">
+                <option value="0" selected>۰</option>
+                <option value="1">۱</option>
+                <option value="2">۲</option>
+              </select>
+            </div>
+          </div>
+          
+          <div class="price-calculator" id="price-calculator">
+            <div class="price-row">
+              <span>قیمت هر شب:</span>
+              <span>۱,۲۰۰,۰۰۰ تومان</span>
+            </div>
+            <div class="price-row">
+              <span>تعداد شب:</span>
+              <span id="nights-count">۱ شب</span>
+            </div>
+            <div class="price-row">
+              <span>مالیات و عوارض:</span>
+              <span id="tax-amount">۱۲۰,۰۰۰ تومان</span>
+            </div>
+            <div class="price-row price-total">
+              <span>مبلغ قابل پرداخت:</span>
+              <span id="total-price">۱,۳۲۰,۰۰۰ تومان</span>
+            </div>
+          </div>
+          
+          <button type="submit" class="btn btn-primary btn-lg w-100 mt-4">رزرو اتاق</button>
+        </form>
+        
+        <div class="mt-4 text-center">
+          <small class="text-muted">
+            <i class="fas fa-info-circle me-1"></i>
+            رزرو اتاق‌ها با گارانتی بهترین قیمت و بدون کارمزد انجام می‌شود.
+          </small>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Fullscreen Gallery -->
+<div class="gallery-overlay" id="gallery-overlay">
+  <div class="close-fullscreen" id="close-fullscreen">
+    <i class="fas fa-times"></i>
+  </div>
+  <div class="fullscreen-swiper-container">
+    <div class="swiper fullscreen-swiper">
+      <div class="swiper-wrapper">
+        <div class="swiper-slide">
+          <img src="{% static 'images/room-detail-1.jpg' %}" alt="تصویر اتاق">
+        </div>
+        <div class="swiper-slide">
+          <img src="{% static 'images/room-detail-2.jpg' %}" alt="تصویر اتاق">
+        </div>
+        <div class="swiper-slide">
+          <img src="{% static 'images/room-detail-3.jpg' %}" alt="تصویر اتاق">
+        </div>
+        <div class="swiper-slide">
+          <img src="{% static 'images/room-detail-4.jpg' %}" alt="تصویر اتاق">
+        </div>
+        <div class="swiper-slide">
+          <img src="{% static 'images/room-detail-5.jpg' %}" alt="تصویر اتاق">
+        </div>
+      </div>
+      <div class="swiper-button-next"></div>
+      <div class="swiper-button-prev"></div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Initialize Swiper gallery
+    const thumbsSwiper = new Swiper(".thumb-swiper", {
+      spaceBetween: 10,
+      slidesPerView: 4,
+      freeMode: true,
+      watchSlidesProgress: true,
+    });
+    
+    const mainSwiper = new Swiper(".main-swiper", {
+      spaceBetween: 10,
+      navigation: {
+        nextEl: ".swiper-button-next",
+        prevEl: ".swiper-button-prev",
+      },
+      thumbs: {
+        swiper: thumbsSwiper,
+      },
+    });
+    
+    // Fullscreen gallery functionality
+    const fullscreenBtn = document.getElementById('fullscreen-btn');
+    const galleryOverlay = document.getElementById('gallery-overlay');
+    const closeFullscreen = document.getElementById('close-fullscreen');
+    
+    if (fullscreenBtn && galleryOverlay && closeFullscreen) {
+      let fullscreenSwiper;
+      
+      fullscreenBtn.addEventListener('click', function() {
+        galleryOverlay.classList.add('active');
+        
+        // Initialize fullscreen swiper if it doesn't exist
+        if (!fullscreenSwiper) {
+          fullscreenSwiper = new Swiper(".fullscreen-swiper", {
+            spaceBetween: 10,
+            navigation: {
+              nextEl: ".swiper-button-next",
+              prevEl: ".swiper-button-prev",
+            },
+          });
+        }
+        
+        // Set to the same slide as the main swiper
+        fullscreenSwiper.slideTo(mainSwiper.activeIndex, 0);
+      });
+      
+      closeFullscreen.addEventListener('click', function() {
+        galleryOverlay.classList.remove('active');
+      });
+      
+      // Keyboard navigation for fullscreen gallery
+      document.addEventListener('keydown', function(e) {
+        if (!galleryOverlay.classList.contains('active')) return;
+        
+        if (e.key === 'Escape') {
+          galleryOverlay.classList.remove('active');
+        } else if (e.key === 'ArrowLeft') {
+          fullscreenSwiper.slideNext();
+        } else if (e.key === 'ArrowRight') {
+          fullscreenSwiper.slidePrev();
+        }
+      });
+    }
+    
+    // Initialize date pickers with today and tomorrow as default values
+    const today = new Date();
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    
+    // Format dates for input fields
+    const formatDate = (date) => {
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    };
+    
+    // Format price to Persian style with Toman currency
+    const formatPrice = (price) => {
+      return new Intl.NumberFormat('fa-IR').format(price) + ' تومان';
+    };
+    
+    // Calculate nights between two dates
+    const calculateNights = (checkIn, checkOut) => {
+      const start = new Date(checkIn);
+      const end = new Date(checkOut);
+      const diffTime = Math.abs(end - start);
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      return diffDays;
+    };
+    
+    // Format night count in Persian
+    const formatNights = (nights) => {
+      return nights + ' شب';
+    };
+    
+    // Booking form functionality
+    const checkInInput = document.getElementById('check-in-date');
+    const checkOutInput = document.getElementById('check-out-date');
+    const nightsCountElement = document.getElementById('nights-count');
+    const taxAmountElement = document.getElementById('tax-amount');
+    const totalPriceElement = document.getElementById('total-price');
+    const bookingForm = document.getElementById('booking-form');
+    const adultsSelect = document.getElementById('adults');
+    const childrenSelect = document.getElementById('children');
+    
+    // Base price per night
+    const pricePerNight = 1200000;
+    const taxRate = 0.10; // 10% tax
+    
+    if (checkInInput && checkOutInput) {
+      const todayFormatted = formatDate(today);
+      const tomorrowFormatted = formatDate(tomorrow);
+      
+      // Set initial values
+      checkInInput.min = todayFormatted;
+      checkInInput.value = todayFormatted;
+      
+      checkOutInput.min = tomorrowFormatted;
+      checkOutInput.value = tomorrowFormatted;
+      
+      // Update price calculation when dates change
+      const updatePriceCalculation = () => {
+        const checkIn = checkInInput.value;
+        const checkOut = checkOutInput.value;
+        
+        if (checkIn && checkOut) {
+          const nights = calculateNights(checkIn, checkOut);
+          
+          if (nights > 0) {
+            const subtotal = pricePerNight * nights;
+            const tax = subtotal * taxRate;
+            const total = subtotal + tax;
+            
+            nightsCountElement.textContent = formatNights(nights);
+            taxAmountElement.textContent = formatPrice(tax);
+            totalPriceElement.textContent = formatPrice(total);
+          }
+        }
+      };
+      
+      // Initial price calculation
+      updatePriceCalculation();
+      
+      // Update calculation when dates change
+      checkInInput.addEventListener('change', function() {
+        const newMin = new Date(this.value);
+        newMin.setDate(newMin.getDate() + 1);
+        checkOutInput.min = formatDate(newMin);
+        
+        // If current check-out is before new check-in + 1
+        if (new Date(checkOutInput.value) <= new Date(this.value)) {
+          checkOutInput.value = formatDate(newMin);
+        }
+        
+        updatePriceCalculation();
+      });
+      
+      checkOutInput.addEventListener('change', updatePriceCalculation);
+      
+      // Handle guest count changes
+      if (adultsSelect && childrenSelect) {
+        adultsSelect.addEventListener('change', updatePriceCalculation);
+        childrenSelect.addEventListener('change', updatePriceCalculation);
+      }
+      
+      // Form submission
+      if (bookingForm) {
+        bookingForm.addEventListener('submit', function(e) {
+          e.preventDefault();
+          
+          // Validate dates
+          const checkIn = new Date(checkInInput.value);
+          const checkOut = new Date(checkOutInput.value);
+          
+          if (checkOut <= checkIn) {
+            alert('تاریخ خروج باید بعد از تاریخ ورود باشد.');
+            return;
+          }
+          
+          // Success message
+          alert('رزرو شما با موفقیت ثبت شد. به زودی ایمیل تاییدی دریافت خواهید کرد.');
+          
+          // In a real app, you would submit the form data to the server here
+          // bookingForm.submit();
+        });
+      }
+    }
+    
+    // Review form functionality
+    const reviewForm = document.querySelector('.review-form form');
+    const starRating = document.querySelector('.star-rating');
+    const reviewTitleInput = document.getElementById('review-title');
+    const reviewContentInput = document.getElementById('review-content');
+    
+    if (reviewForm && starRating) {
+      // Highlight stars on hover
+      const stars = starRating.querySelectorAll('label');
+      stars.forEach(star => {
+        star.addEventListener('mouseover', () => {
+          const currentStarValue = star.getAttribute('for').replace('star', '');
+          highlightStars(currentStarValue);
+        });
+      });
+      
+      // Reset stars when mouse leaves rating container
+      starRating.addEventListener('mouseleave', () => {
+        const checkedStar = starRating.querySelector('input:checked');
+        if (checkedStar) {
+          const value = checkedStar.value;
+          highlightStars(value);
+        } else {
+          resetStars();
+        }
+      });
+      
+      // Function to highlight stars
+      function highlightStars(value) {
+        resetStars();
+        for (let i = value; i >= 1; i--) {
+          const starLabel = document.querySelector(`label[for="star${i}"]`);
+          if (starLabel) {
+            starLabel.style.color = 'var(--secondary-color)';
+          }
+        }
+      }
+      
+      // Function to reset star highlighting
+      function resetStars() {
+        stars.forEach(star => {
+          star.style.color = '#ddd';
+        });
+      }
+      
+      // Handle review submission
+      reviewForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        // Validate form
+        const rating = reviewForm.querySelector('input[name="rating"]:checked');
+        if (!rating) {
+          alert('لطفاً امتیاز خود را انتخاب کنید.');
+          return;
+        }
+        
+        if (!reviewTitleInput.value.trim()) {
+          alert('لطفاً عنوان نظر خود را وارد کنید.');
+          reviewTitleInput.focus();
+          return;
+        }
+        
+        if (!reviewContentInput.value.trim() || reviewContentInput.value.length < 10) {
+          alert('لطفاً نظر خود را با جزئیات بیشتر وارد کنید (حداقل ۱۰ کاراکتر).');
+          reviewContentInput.focus();
+          return;
+        }
+        
+        // Success message
+        alert('نظر شما با موفقیت ثبت شد و پس از تایید نمایش داده خواهد شد.');
+        
+        // Reset form
+        reviewForm.reset();
+        resetStars();
+        
+        // In a real app, you would submit the review to the server here
+        // reviewForm.submit();
+      });
+    }
+  });
+</script>
+{% endblock %}

@@ -1,0 +1,303 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}هتل لوکس آسمان | رزرو آنلاین اتاق{% endblock %}
+
+{% block extra_head %}
+<style>
+  /* Specific styles for the home page */
+  .search-box {
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 15px;
+    padding: 2rem;
+    margin-top: 2rem;
+    box-shadow: var(--shadow-lg);
+  }
+  
+  .featured-rooms {
+    padding: 5rem 0;
+  }
+  
+  .service-icon {
+    font-size: 2.5rem;
+    color: var(--secondary-color);
+    margin-bottom: 1rem;
+  }
+  
+  .service-box {
+    background-color: white;
+    border-radius: 15px;
+    padding: 2rem;
+    text-align: center;
+    box-shadow: var(--shadow-md);
+    transition: var(--transition-normal);
+  }
+  
+  .service-box:hover {
+    transform: translateY(-10px);
+    box-shadow: var(--shadow-lg);
+  }
+  
+  .about-img {
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: var(--shadow-lg);
+  }
+  
+  .about-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  .testimonial-card {
+    background-color: white;
+    border-radius: 15px;
+    padding: 2rem;
+    margin: 1rem;
+    text-align: center;
+    box-shadow: var(--shadow-md);
+  }
+  
+  .testimonial-img {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin: 0 auto 1rem;
+    border: 3px solid var(--secondary-color);
+  }
+  
+  .testimonial-rating {
+    color: var(--secondary-color);
+    margin-bottom: 1rem;
+  }
+  
+  .contact-form {
+    background-color: white;
+    border-radius: 15px;
+    padding: 2rem;
+    box-shadow: var(--shadow-md);
+  }
+  
+  .contact-icon {
+    font-size: 2rem;
+    color: var(--secondary-color);
+    margin-bottom: 1rem;
+  }
+  
+  .counter-box {
+    text-align: center;
+    padding: 2rem;
+    margin-bottom: 2rem;
+  }
+  
+  .counter-number {
+    font-size: 3rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin-bottom: 0.5rem;
+  }
+  
+  .counter-text {
+    color: var(--gray-color);
+    font-weight: 600;
+  }
+  
+  .bg-light-pattern {
+    background-color: var(--light-color);
+    background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%231e3a8a' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  }
+</style>
+{% endblock %}
+
+{% block hero %}
+<section class="hero">
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <h1 class="display-4">تجربه‌ای به یادماندنی در هتل آسمان</h1>
+    <p class="lead">آرامش، آسایش و لوکس‌ترین امکانات در انتظار شماست</p>
+    
+    <div class="search-box">
+      <form action="{% url 'room_list' %}" method="get">
+        <div class="row g-3">
+          <div class="col-md-4">
+            <label for="check-in" class="form-label">تاریخ ورود</label>
+            <input type="date" class="form-control" id="check-in" name="check_in" required>
+          </div>
+          <div class="col-md-4">
+            <label for="check-out" class="form-label">تاریخ خروج</label>
+            <input type="date" class="form-control" id="check-out" name="check_out" required>
+          </div>
+          <div class="col-md-2">
+            <label for="guests" class="form-label">تعداد مهمان</label>
+            <select class="form-control" id="guests" name="guests">
+              <option value="1">۱ نفر</option>
+              <option value="2" selected>۲ نفر</option>
+              <option value="3">۳ نفر</option>
+              <option value="4">۴ نفر</option>
+              <option value="5">۵ نفر</option>
+            </select>
+          </div>
+          <div class="col-md-2">
+            <label class="form-label d-none d-md-block">&nbsp;</label>
+            <button type="submit" class="btn btn-primary w-100">
+              <i class="fas fa-search"></i> جستجو
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block content %}
+<!-- Featured Rooms Section -->
+<section class="featured-rooms">
+  <div class="container">
+    <h2 class="section-title">اتاق‌های ویژه ما</h2>
+    
+    <div class="row g-4">
+      <!-- Room 1 -->
+      <div class="col-md-4">
+        <div class="room-card">
+          <div class="room-card-img">
+            <img src="{% static 'images/room-1.jpg' %}" alt="اتاق دبل لوکس">
+            <div class="room-price">از شبی ۱,۲۰۰,۰۰۰ تومان</div>
+          </div>
+          <div class="room-card-body">
+            <h3 class="room-card-title">اتاق دبل لوکس</h3>
+            <div class="room-card-features">
+              <div class="room-feature"><i class="fas fa-bed"></i> تخت دبل کینگ</div>
+              <div class="room-feature"><i class="fas fa-ruler-combined"></i> ۳۵ متر مربع</div>
+              <div class="room-feature"><i class="fas fa-users"></i> ۲ مهمان</div>
+            </div>
+            <p class="room-card-text">لذت اقامت در اتاقی لوکس با منظره شهر، دسترسی به خدمات ویژه و صبحانه رایگان.</p>
+            <div class="room-card-footer">
+              <a href="{% url 'room_detail' 1 %}" class="btn-room-details">مشاهده جزئیات</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Room 2 -->
+      <div class="col-md-4">
+        <div class="room-card">
+          <div class="room-card-img">
+            <img src="{% static 'images/room-2.jpg' %}" alt="سوئیت خانوادگی">
+            <div class="room-price">از شبی ۱,۸۰۰,۰۰۰ تومان</div>
+          </div>
+          <div class="room-card-body">
+            <h3 class="room-card-title">سوئیت خانوادگی</h3>
+            <div class="room-card-features">
+              <div class="room-feature"><i class="fas fa-bed"></i> ۱ تخت کینگ + ۲ تخت سینگل</div>
+              <div class="room-feature"><i class="fas fa-ruler-combined"></i> ۵۵ متر مربع</div>
+              <div class="room-feature"><i class="fas fa-users"></i> ۴ مهمان</div>
+            </div>
+            <p class="room-card-text">سوئیت بزرگ و راحت برای خانواده‌ها با فضای جداگانه نشیمن و انواع امکانات رفاهی.</p>
+            <div class="room-card-footer">
+              <a href="{% url 'room_detail' 2 %}" class="btn-room-details">مشاهده جزئیات</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Room 3 -->
+      <div class="col-md-4">
+        <div class="room-card">
+          <div class="room-card-img">
+            <img src="{% static 'images/room-3.jpg' %}" alt="سوئیت پرزیدنت">
+            <div class="room-price">از شبی ۲,۵۰۰,۰۰۰ تومان</div>
+          </div>
+          <div class="room-card-body">
+            <h3 class="room-card-title">سوئیت پرزیدنت</h3>
+            <div class="room-card-features">
+              <div class="room-feature"><i class="fas fa-bed"></i> تخت کینگ سایز</div>
+              <div class="room-feature"><i class="fas fa-ruler-combined"></i> ۸۰ متر مربع</div>
+              <div class="room-feature"><i class="fas fa-users"></i> ۲ مهمان</div>
+            </div>
+            <p class="room-card-text">لوکس‌ترین سوئیت هتل با منظره پانوراما، جکوزی اختصاصی و خدمات VIP برای میهمانان ویژه.</p>
+            <div class="room-card-footer">
+              <a href="{% url 'room_detail' 3 %}" class="btn-room-details">مشاهده جزئیات</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="text-center mt-5">
+      <a href="{% url 'room_list' %}" class="btn btn-outline-primary btn-lg">مشاهده همه اتاق‌ها <i class="fas fa-arrow-left ms-2"></i></a>
+    </div>
+  </div>
+</section>
+
+<!-- Hotel Facts Section -->
+<section class="py-5 bg-light-pattern">
+  <div class="container">
+    <div class="row g-4">
+      <div class="col-md-3 col-6">
+        <div class="counter-box">
+          <div class="counter-number">۵۰</div>
+          <div class="counter-text">اتاق لوکس</div>
+        </div>
+      </div>
+      <div class="col-md-3 col-6">
+        <div class="counter-box">
+          <div class="counter-number">۳</div>
+          <div class="counter-text">رستوران مجلل</div>
+        </div>
+      </div>
+      <div class="col-md-3 col-6">
+        <div class="counter-box">
+          <div class="counter-number">۱۵</div>
+          <div class="counter-text">خدمات متنوع</div>
+        </div>
+      </div>
+      <div class="col-md-3 col-6">
+        <div class="counter-box">
+          <div class="counter-number">۹۶٪</div>
+          <div class="counter-text">رضایت مشتریان</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Services Section -->
+<section class="py-5" id="services">
+  <div class="container">
+    <h2 class="section-title">خدمات و امکانات</h2>
+    
+    <div class="row g-4">
+      <!-- Service 1 -->
+      <div class="col-md-4 col-sm-6">
+        <div class="service-box">
+          <div class="service-icon">
+            <i class="fas fa-utensils"></i>
+          </div>
+          <h3>رستوران مجلل</h3>
+          <p>لذت صرف غذاهای ایرانی و فرنگی در محیطی لوکس با منوی متنوع و سرآشپزهای حرفه‌ای.</p>
+        </div>
+      </div>
+      
+      <!-- Service 2 -->
+      <div class="col-md-4 col-sm-6">
+        <div class="service-box">
+          <div class="service-icon">
+            <i class="fas fa-swimming-pool"></i>
+          </div>
+          <h3>استخر و سونا</h3>
+          <p>استخر سرپوشیده با آب گرم، سونای خشک و بخار، جکوزی و امکانات کامل آبی.</p>
+        </div>
+      </div>
+      
+      <!-- Service 3 -->
+      <div class="col-md-4 col-sm-6">
+        <div class="service-box">
+          <div class="service-icon">
+            <i class="fas fa-spa"></i>
+          </div>
+          <h3>اسپا و ماساژ</h3>
+          <p>خدمات متنوع اسپا، ماساژ و زیبایی توسط متخصصین مجر
+

@@ -1,25 +1,829 @@
 {% extends 'base.html' %}
-{% block title %}لیست اتاق‌ها{% endblock %}
+{% load static %}
+
+{% block title %}لیست اتاق‌های هتل آسمان | رزرو آنلاین{% endblock %}
+
+{% block extra_head %}
+<style>
+  /* Specific styles for room list page */
+  .room-list-header {
+    background-color: var(--light-color);
+    padding: 3rem 0;
+    margin-bottom: 2rem;
+  }
+  
+  .filter-container {
+    background-color: white;
+    border-radius: 15px;
+    padding: 1.5rem;
+    box-shadow: var(--shadow-md);
+    margin-bottom: 2rem;
+  }
+  
+  .filter-title {
+    font-weight: 700;
+    margin-bottom: 1rem;
+    position: relative;
+    padding-bottom: 0.5rem;
+  }
+  
+  .filter-title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 30px;
+    height: 2px;
+    background-color: var(--secondary-color);
+  }
+  
+  .filter-item {
+    margin-bottom: 0.75rem;
+  }
+  
+  .range-slider {
+    height: 5px;
+    position: relative;
+    background-color: #e1e9f6;
+    border-radius: 2px;
+  }
+  
+  .range-selected {
+    height: 100%;
+    position: absolute;
+    border-radius: 2px;
+    background-color: var(--primary-color);
+  }
+  
+  .range-input {
+    position: relative;
+  }
+  
+  .range-input input {
+    position: absolute;
+    width: 100%;
+    height: 5px;
+    top: -5px;
+    background: none;
+    pointer-events: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+  }
+  
+  .range-input input::-webkit-slider-thumb {
+    height: 17px;
+    width: 17px;
+    border-radius: 50%;
+    border: 3px solid var(--primary-color);
+    background-color: #fff;
+    pointer-events: auto;
+    -webkit-appearance: none;
+  }
+  
+  .range-input input::-moz-range-thumb {
+    height: 17px;
+    width: 17px;
+    border-radius: 50%;
+    border: 3px solid var(--primary-color);
+    background-color: #fff;
+    pointer-events: auto;
+    -moz-appearance: none;
+  }
+  
+  .sort-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+  }
+  
+  .view-buttons {
+    display: flex;
+    gap: 0.5rem;
+  }
+  
+  .view-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: white;
+    color: var(--gray-color);
+    border: 2px solid #e1e9f6;
+    transition: var(--transition-normal);
+  }
+  
+  .view-btn.active, .view-btn:hover {
+    background-color: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+  }
+  
+  .pagination-container {
+    display: flex;
+    justify-content: center;
+    margin: 3rem 0;
+  }
+  
+  .pagination {
+    display: flex;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    gap: 0.5rem;
+  }
+  
+  .page-item .page-link {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: white;
+    color: var(--dark-color);
+    border: 2px solid #e1e9f6;
+    transition: var(--transition-normal);
+  }
+  
+  .page-item.active .page-link, 
+  .page-item .page-link:hover {
+    background-color: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+  }
+  
+  .booking-btn {
+    background-color: var(--secondary-color);
+    color: white;
+    border: none;
+    border-radius: 30px;
+    padding: 0.5rem 1.25rem;
+    transition: var(--transition-normal);
+  }
+  
+  .booking-btn:hover {
+    background-color: #e08e00;
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-md);
+    color: white;
+  }
+
+  /* Custom checkbox style */
+  .custom-checkbox {
+    display: block;
+    position: relative;
+    padding-right: 30px;
+    margin-bottom: 12px;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .custom-checkbox input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+  }
+
+  .checkmark {
+    position: absolute;
+    top: 2px;
+    right: 0;
+    height: 20px;
+    width: 20px;
+    background-color: #fff;
+    border: 2px solid #ddd;
+    border-radius: 4px;
+  }
+
+  .custom-checkbox:hover input ~ .checkmark {
+    border-color: var(--primary-color);
+  }
+
+  .custom-checkbox input:checked ~ .checkmark {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+  }
+
+  .checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+  }
+
+  .custom-checkbox input:checked ~ .checkmark:after {
+    display: block;
+  }
+
+  .custom-checkbox .checkmark:after {
+    right: 6px;
+    top: 2px;
+    width: 5px;
+    height: 10px;
+    border: solid white;
+    border-width: 0 3px 3px 0;
+    transform: rotate(45deg);
+  }
+</style>
+{% endblock %}
 
 {% block content %}
-  <h2>📄 لیست اتاق‌ها</h2>
+<!-- Room List Header -->
+<section class="room-list-header">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-8 mx-auto text-center">
+        <h1 class="mb-3">اتاق‌های هتل آسمان</h1>
+        <p class="lead">رزرو آنلاین انواع اتاق‌ها و سوئیت‌های لوکس با بهترین قیمت</p>
+      </div>
+    </div>
+  </div>
+</section>
 
-  {% if is_manager %}
-    <a href="{% url 'room_create' %}">➕ ایجاد اتاق جدید</a>
-  {% endif %}
+<div class="container">
+  <div class="row g-4">
+    <!-- Sidebar with filters -->
+    <div class="col-lg-4">
+      <div class="filter-container">
+        <h3 class="filter-title">جستجو و فیلتر</h3>
+        <form>
+          <!-- Date Range -->
+          <div class="mb-4">
+            <h5>تاریخ اقامت</h5>
+            <div class="row g-2">
+              <div class="col-6">
+                <label for="check-in" class="form-label">ورود</label>
+                <input type="date" class="form-control" id="check-in" name="check_in" required>
+              </div>
+              <div class="col-6">
+                <label for="check-out" class="form-label">خروج</label>
+                <input type="date" class="form-control" id="check-out" name="check_out" required>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Guests -->
+          <div class="mb-4">
+            <h5>تعداد مهمانان</h5>
+            <div class="row g-2">
+              <div class="col-6">
+                <label for="adults" class="form-label">بزرگسال</label>
+                <select class="form-control" id="adults" name="adults">
+                  <option value="1">۱</option>
+                  <option value="2" selected>۲</option>
+                  <option value="3">۳</option>
+                  <option value="4">۴</option>
+                </select>
+              </div>
+              <div class="col-6">
+                <label for="children" class="form-label">کودک</label>
+                <select class="form-control" id="children" name="children">
+                  <option value="0" selected>۰</option>
+                  <option value="1">۱</option>
+                  <option value="2">۲</option>
+                  <option value="3">۳</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Room Type -->
+          <div class="mb-4">
+            <h5>نوع اتاق</h5>
+            <div class="filter-item">
+              <label class="custom-checkbox">
+                اتاق استاندارد
+                <input type="checkbox" checked="checked" name="room_type" value="standard">
+                <span class="checkmark"></span>
+              </label>
+            </div>
+            <div class="filter-item">
+              <label class="custom-checkbox">
+                اتاق دبل
+                <input type="checkbox" checked="checked" name="room_type" value="double">
+                <span class="checkmark"></span>
+              </label>
+            </div>
+            <div class="filter-item">
+              <label class="custom-checkbox">
+                سوئیت جونیور
+                <input type="checkbox" checked="checked" name="room_type" value="junior">
+                <span class="checkmark"></span>
+              </label>
+            </div>
+            <div class="filter-item">
+              <label class="custom-checkbox">
+                سوئیت خانوادگی
+                <input type="checkbox" checked="checked" name="room_type" value="family">
+                <span class="checkmark"></span>
+              </label>
+            </div>
+            <div class="filter-item">
+              <label class="custom-checkbox">
+                سوئیت پرزیدنت
+                <input type="checkbox" checked="checked" name="room_type" value="president">
+                <span class="checkmark"></span>
+              </label>
+            </div>
+          </div>
+          
+          <!-- Price Range -->
+          <div class="mb-4">
+            <h5>محدوده قیمت (تومان)</h5>
+            <div class="price-range-slider">
+              <div class="range-slider mt-4">
+                <div class="range-selected"></div>
+              </div>
+              
+              <div class="range-input">
+                <input type="range" class="min" min="500000" max="5000000" value="500000" step="100000">
+                <input type="range" class="max" min="500000" max="5000000" value="3000000" step="100000">
+              </div>
+              
+              <div class="d-flex justify-content-between mt-2">
+                <span id="min-price">۵۰۰,۰۰۰</span>
+                <span id="max-price">۳,۰۰۰,۰۰۰</span>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Amenities -->
+          <div class="mb-4">
+            <h5>امکانات</h5>
+            <div class="filter-item">
+              <label class="custom-checkbox">
+                وای‌فای رایگان
+                <input type="checkbox" checked="checked" name="amenities" value="wifi">
+                <span class="checkmark"></span>
+              </label>
+            </div>
+            <div class="filter-item">
+              <label class="custom-checkbox">
+                تهویه مطبوع
+                <input type="checkbox" checked="checked" name="amenities" value="ac">
+                <span class="checkmark"></span>
+              </label>
+            </div>
+            <div class="filter-item">
+              <label class="custom-checkbox">
+                مینی‌بار
+                <input type="checkbox" name="amenities" value="minibar">
+                <span class="checkmark"></span>
+              </label>
+            </div>
+            <div class="filter-item">
+              <label class="custom-checkbox">
+                گاوصندوق
+                <input type="checkbox" name="amenities" value="safe">
+                <span class="checkmark"></span>
+              </label>
+            </div>
+            <div class="filter-item">
+              <label class="custom-checkbox">
+                منظره دریا
+                <input type="checkbox" name="amenities" value="sea-view">
+                <span class="checkmark"></span>
+              </label>
+            </div>
+            <div class="filter-item">
+              <label class="custom-checkbox">
+                تراس/بالکن
+                <input type="checkbox" name="amenities" value="balcony">
+                <span class="checkmark"></span>
+              </label>
+            </div>
+          </div>
+          
+          <button type="submit" class="btn btn-primary w-100">اعمال فیلترها</button>
+        </form>
+      </div>
+    </div>
+    
+    <!-- Room List -->
+    <div class="col-lg-8">
+      <!-- Sort Options -->
+      <div class="sort-container">
+        <div class="form-inline">
+          <label for="sort" class="me-2">مرتب‌سازی:</label>
+          <select class="form-select" id="sort">
+            <option value="popular">محبوب‌ترین</option>
+            <option value="price-low">قیمت: کم به زیاد</option>
+            <option value="price-high">قیمت: زیاد به کم</option>
+            <option value="rating">امتیاز مهمانان</option>
+          </select>
+        </div>
+        
+        <div class="view-buttons d-none d-md-flex">
+          <button class="view-btn active" title="نمایش به صورت گرید">
+            <i class="fas fa-th"></i>
+          </button>
+          <button class="view-btn" title="نمایش به صورت لیست">
+            <i class="fas fa-list"></i>
+          </button>
+        </div>
+      </div>
+      
+      <!-- Room Grid -->
+      <div class="room-grid view-active">
+        <div class="row g-4">
+          <!-- Room 1 -->
+          <div class="col-md-6">
+            <div class="room-card">
+              <div class="room-card-img">
+                <img src="{% static 'images/room-1.jpg' %}" alt="اتاق دبل لوکس">
+                <div class="room-price">۱,۲۰۰,۰۰۰ تومان / شب</div>
+              </div>
+              <div class="room-card-body">
+                <h3 class="room-card-title">اتاق دبل لوکس</h3>
+                <div class="room-card-features">
+                  <div class="room-feature"><i class="fas fa-bed"></i> تخت دبل کینگ</div>
+                  <div class="room-feature"><i class="fas fa-ruler-combined"></i> ۳۵ متر مربع</div>
+                  <div class="room-feature"><i class="fas fa-users"></i> ۲ مهمان</div>
+                </div>
+                <p class="room-card-text">لذت اقامت در اتاقی لوکس با منظره شهر، دسترسی به خدمات ویژه و صبحانه رایگان.</p>
+                <div class="room-card-footer d-flex">
+                  <a href="{% url 'room_detail' 1 %}" class="btn-room-details flex-grow-1 me-2">مشاهده جزئیات</a>
+                  <a href="{% url 'book_room' 1 %}" class="btn booking-btn"><i class="fas fa-calendar-check"></i> رزرو</a>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Room 2 -->
+          <div class="col-md-6">
+            <div class="room-card">
+              <div class="room-card-img">
+                <img src="{% static 'images/room-2.jpg' %}" alt="سوئیت جونیور">
+                <div class="room-price">۱,۵۰۰,۰۰۰ تومان / شب</div>
+              </div>
+              <div class="room-card-body">
+                <h3 class="room-card-title">سوئیت جونیور</h3>
+                <div class="room-card-features">
+                  <div class="room-feature"><i class="fas fa-bed"></i> تخت کینگ سایز</div>
+                  <div class="room-feature"><i class="fas fa-ruler-combined"></i> ۴۵ متر مربع</div>
+                  <div class="room-feature"><i class="fas fa-users"></i> ۲ مهمان</div>
+                </div>
+                <p class="room-card-text">سوئیت مدرن با فضای نشیمن جداگانه، منظره پانوراما و امکانات رفاهی عالی.</p>
+                <div class="room-card-footer d-flex">
+                  <a href="{% url 'room_detail' 2 %}" class="btn-room-details flex-grow-1 me-2">مشاهده جزئیات</a>
+                  <a href="{% url 'book_room' 2 %}" class="booking-btn"><i class="fas fa-calendar-check"></i> رزرو</a>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Room 3 -->
+          <div class="col-md-6">
+            <div class="room-card">
+              <div class="room-card-img">
+                <img src="{% static 'images/room-3.jpg' %}" alt="سوئیت خانوادگی">
+                <div class="room-price">۱,۸۰۰,۰۰۰ تومان / شب</div>
+              </div>
+              <div class="room-card-body">
+                <h3 class="room-card-title">سوئیت خانوادگی</h3>
+                <div class="room-card-features">
+                  <div class="room-feature"><i class="fas fa-bed"></i> ۱ تخت کینگ + ۲ تخت سینگل</div>
+                  <div class="room-feature"><i class="fas fa-ruler-combined"></i> ۵۵ متر مربع</div>
+                  <div class="room-feature"><i class="fas fa-users"></i> ۴ مهمان</div>
+                </div>
+                <p class="room-card-text">سوئیت بزرگ و راحت برای خانواده‌ها با فضای جداگانه نشیمن و انواع امکانات رفاهی.</p>
+                <div class="room-card-footer d-flex">
+                  <a href="{% url 'room_detail' 3 %}" class="btn-room-details flex-grow-1 me-2">مشاهده جزئیات</a>
+                  <a href="{% url 'book_room' 3 %}" class="booking-btn"><i class="fas fa-calendar-check"></i> رزرو</a>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Room 4 -->
+          <div class="col-md-6">
+            <div class="room-card">
+              <div class="room-card-img">
+                <img src="{% static 'images/room-4.jpg' %}" alt="سوئیت پرزیدنت">
+                <div class="room-price">۲,۵۰۰,۰۰۰ تومان / شب</div>
+              </div>
+              <div class="room-card-body">
+                <h3 class="room-card-title">سوئیت پرزیدنت</h3>
+                <div class="room-card-features">
+                  <div class="room-feature"><i class="fas fa-bed"></i> تخت کینگ سایز</div>
+                  <div class="room-feature"><i class="fas fa-ruler-combined"></i> ۸۰ متر مربع</div>
+                  <div class="room-feature"><i class="fas fa-users"></i> ۲ مهمان</div>
+                </div>
+                <p class="room-card-text">لوکس‌ترین سوئیت هتل با منظره پانوراما، جکوزی اختصاصی و خدمات VIP برای میهمانان ویژه.</p>
+                <div class="room-card-footer d-flex">
+                  <a href="{% url 'room_detail' 4 %}" class="btn-room-details flex-grow-1 me-2">مشاهده جزئیات</a>
+                  <a href="{% url 'book_room' 4 %}" class="booking-btn"><i class="fas fa-calendar-check"></i> رزرو</a>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Room 5 -->
+          <div class="col-md-6">
+            <div class="room-card">
+              <div class="room-card-img">
+                <img src="{% static 'images/room-5.jpg' %}" alt="اتاق استاندارد">
+                <div class="room-price">۹۰۰,۰۰۰ تومان / شب</div>
+              </div>
+              <div class="room-card-body">
+                <h3 class="room-card-title">اتاق استاندارد</h3>
+                <div class="room-card-features">
+                  <div class="room-feature"><i class="fas fa-bed"></i> تخت دبل</div>
+                  <div class="room-feature"><i class="fas fa-ruler-combined"></i> ۲۸ متر مربع</div>
+                  <div class="room-feature"><i class="fas fa-users"></i> ۲ مهمان</div>
+                </div>
+                <p class="room-card-text">اتاق راحت و مقرون به صرفه با تمام امکانات ضروری برای اقامتی دلنشین.</p>
+                <div class="room-card-footer d-flex">
+                  <a href="{% url 'room_detail' 5 %}" class="btn-room-details flex-grow-1 me-2">مشاهده جزئیات</a>
+                  <a href="{% url 'book_room' 5 %}" class="booking-btn"><i class="fas fa-calendar-check"></i> رزرو</a>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Room 6 -->
+          <div class="col-md-6">
+            <div class="room-card">
+              <div class="room-card-img">
+                <img src="{% static 'images/room-6.jpg' %}" alt="اتاق توئین">
+                <div class="room-price">۱,۰۰۰,۰۰۰ تومان / شب</div>
+              </div>
+              <div class="room-card-body">
+                <h3 class="room-card-title">اتاق توئین</h3>
+                <div class="room-card-features">
+                  <div class="room-feature"><i class="fas fa-bed"></i> ۲ تخت سینگل</div>
+                  <div class="room-feature"><i class="fas fa-ruler-combined"></i> ۳۰ متر مربع</div>
+                  <div class="room-feature"><i class="fas fa-users"></i> ۲ مهمان</div>
+                </div>
+                <p class="room-card-text">اتاق با دو تخت جداگانه، مناسب برای دوستان یا همکاران با امکانات کامل.</p>
+                <div class="room-card-footer d-flex">
+                  <a href="{% url 'room_detail' 6 %}" class="btn-room-details flex-grow-1 me-2">مشاهده جزئیات</a>
+                  <a href="{% url 'book_room' 6 %}" class="booking-btn"><i class="fas fa-calendar-check"></i> رزرو</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Room List View (Hidden by default) -->
+      <div class="room-list-view d-none">
+        <!-- This will be populated with list view of rooms by JavaScript -->
+      </div>
+      
+      <!-- Pagination -->
+      <div class="pagination-container">
+        <ul class="pagination">
+          <li class="page-item">
+            <a class="page-link" href="#" aria-label="Previous">
+              <i class="fas fa-chevron-right"></i>
+            </a>
+          </li>
+          <li class="page-item active"><a class="page-link" href="#">۱</a></li>
+          <li class="page-item"><a class="page-link" href="#">۲</a></li>
+          <li class="page-item"><a class="page-link" href="#">۳</a></li>
+          <li class="page-item">
+            <a class="page-link" href="#" aria-label="Next">
+              <i class="fas fa-chevron-left"></i>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
 
-  <ul>
-    {% for room in rooms %}
-      <li>
-        <strong>اتاق شماره {{ room.number }}</strong> - {{ room.get_room_type_display }}
-
-        <a href="{% url 'room_detail' room.pk %}">🔍 مشاهده</a>
-
-        {% if is_manager %}
-          | <a href="{% url 'room_update' room.pk %}">✏️ ویرایش</a>
-          | <a href="{% url 'room_delete' room.pk %}">🗑️ حذف</a>
-        {% endif %}
-      </li>
-    {% endfor %}
-  </ul>
+{% block extra_scripts %}
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Set minimum date to today for check-in
+    const today = new Date();
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    
+    // Format dates for input fields
+    const formatDate = (date) => {
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    };
+    
+    // Set default and min values
+    const checkInInput = document.getElementById('check-in');
+    const checkOutInput = document.getElementById('check-out');
+    
+    if (checkInInput && checkOutInput) {
+      const todayFormatted = formatDate(today);
+      const tomorrowFormatted = formatDate(tomorrow);
+      
+      checkInInput.min = todayFormatted;
+      checkInInput.value = todayFormatted;
+      
+      checkOutInput.min = tomorrowFormatted;
+      checkOutInput.value = tomorrowFormatted;
+      
+      // Ensure check-out is always after check-in
+      checkInInput.addEventListener('change', function() {
+        const newMin = new Date(this.value);
+        newMin.setDate(newMin.getDate() + 1);
+        checkOutInput.min = formatDate(newMin);
+        
+        // If current check-out is before new check-in + 1
+        if (new Date(checkOutInput.value) <= new Date(this.value)) {
+          checkOutInput.value = formatDate(newMin);
+        }
+      });
+    }
+    
+    // Price Range Slider
+    const rangeInput = document.querySelectorAll(".range-input input");
+    const priceGap = 500000;
+    const rangeSelected = document.querySelector(".range-selected");
+    const minPriceDisplay = document.getElementById("min-price");
+    const maxPriceDisplay = document.getElementById("max-price");
+    
+    // Format price to Persian style
+    const formatPrice = (price) => {
+      return new Intl.NumberFormat('fa-IR').format(price);
+    };
+    
+    // Update the price display and the range slider
+    const updatePriceRange = () => {
+      let minVal = parseInt(rangeInput[0].value);
+      let maxVal = parseInt(rangeInput[1].value);
+      
+      if (maxVal - minVal < priceGap) {
+        if (maxVal === parseInt(rangeInput[1].max)) {
+          rangeInput[0].value = maxVal - priceGap;
+        } else {
+          rangeInput[1].value = minVal + priceGap;
+        }
+      }
+      
+      // Update range selected width
+      const percent1 = ((minVal - rangeInput[0].min) / (rangeInput[0].max - rangeInput[0].min)) * 100;
+      const percent2 = ((maxVal - rangeInput[1].min) / (rangeInput[1].max - rangeInput[1].min)) * 100;
+      rangeSelected.style.right = percent1 + "%";
+      rangeSelected.style.width = (percent2 - percent1) + "%";
+      
+      // Update price displays
+      minPriceDisplay.textContent = formatPrice(minVal);
+      maxPriceDisplay.textContent = formatPrice(maxVal);
+    };
+    
+    // Initialize the slider
+    updatePriceRange();
+    
+    // Add event listeners for range inputs
+    rangeInput.forEach(input => {
+      input.addEventListener("input", updatePriceRange);
+    });
+    
+    // View toggle functionality
+    const gridViewBtn = document.querySelector('.view-btn:nth-child(1)');
+    const listViewBtn = document.querySelector('.view-btn:nth-child(2)');
+    const roomGrid = document.querySelector('.room-grid');
+    const roomListView = document.querySelector('.room-list-view');
+    
+    if (gridViewBtn && listViewBtn) {
+      // Toggle to grid view
+      gridViewBtn.addEventListener('click', () => {
+        gridViewBtn.classList.add('active');
+        listViewBtn.classList.remove('active');
+        roomGrid.classList.remove('d-none');
+        roomListView.classList.add('d-none');
+      });
+      
+      // Toggle to list view
+      listViewBtn.addEventListener('click', () => {
+        listViewBtn.classList.add('active');
+        gridViewBtn.classList.remove('active');
+        roomListView.classList.remove('d-none');
+        roomGrid.classList.add('d-none');
+        
+        // Generate list view content if it's empty
+        if (roomListView.innerHTML.trim() === '') {
+          generateListView();
+        }
+      });
+    }
+    
+    // Generate the list view of rooms
+    const generateListView = () => {
+      const rooms = document.querySelectorAll('.room-card');
+      let listViewHTML = '';
+      
+      rooms.forEach(room => {
+        const title = room.querySelector('.room-card-title').textContent;
+        const img = room.querySelector('.room-card-img img').getAttribute('src');
+        const price = room.querySelector('.room-price').textContent;
+        const features = room.querySelector('.room-card-features').innerHTML;
+        const description = room.querySelector('.room-card-text').textContent;
+        const detailsUrl = room.querySelector('.btn-room-details').getAttribute('href');
+        const bookUrl = room.querySelector('.booking-btn').getAttribute('href');
+        
+        listViewHTML += `
+          <div class="room-list-item mb-4">
+            <div class="row g-0 bg-white rounded-lg shadow-md overflow-hidden">
+              <div class="col-md-4">
+                <img src="${img}" alt="${title}" class="img-fluid h-100 object-fit-cover">
+              </div>
+              <div class="col-md-8">
+                <div class="p-4">
+                  <div class="d-flex justify-content-between align-items-start mb-3">
+                    <h3 class="room-card-title">${title}</h3>
+                    <div class="room-price bg-primary text-white px-3 py-1 rounded-pill">${price}</div>
+                  </div>
+                  <div class="room-card-features mb-3 d-flex flex-wrap gap-3">
+                    ${features}
+                  </div>
+                  <p class="room-card-text">${description}</p>
+                  <div class="d-flex mt-4">
+                    <a href="${detailsUrl}" class="btn-room-details flex-grow-1 me-2">مشاهده جزئیات</a>
+                    <a href="${bookUrl}" class="booking-btn"><i class="fas fa-calendar-check"></i> رزرو</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+      });
+      
+      roomListView.innerHTML = listViewHTML;
+    };
+    
+    // Sorting functionality
+    const sortSelect = document.getElementById('sort');
+    const roomCards = Array.from(document.querySelectorAll('.room-card'));
+    const roomContainer = document.querySelector('.room-grid .row');
+    
+    if (sortSelect) {
+      sortSelect.addEventListener('change', () => {
+        const sortValue = sortSelect.value;
+        
+        // Clone the room cards for sorting
+        const sortedRooms = [...roomCards];
+        
+        switch (sortValue) {
+          case 'price-low':
+            sortedRooms.sort((a, b) => {
+              const priceA = parseInt(a.querySelector('.room-price').textContent.replace(/[^\d]/g, ''));
+              const priceB = parseInt(b.querySelector('.room-price').textContent.replace(/[^\d]/g, ''));
+              return priceA - priceB;
+            });
+            break;
+            
+          case 'price-high':
+            sortedRooms.sort((a, b) => {
+              const priceA = parseInt(a.querySelector('.room-price').textContent.replace(/[^\d]/g, ''));
+              const priceB = parseInt(b.querySelector('.room-price').textContent.replace(/[^\d]/g, ''));
+              return priceB - priceA;
+            });
+            break;
+            
+          case 'rating':
+            // This would require actual rating data, but for demo we'll use a hardcoded order
+            sortedRooms.sort((a, b) => {
+              const indexA = roomCards.indexOf(a);
+              const indexB = roomCards.indexOf(b);
+              // Custom order for "rating" (demonstration only)
+              const ratings = [4.9, 4.7, 4.8, 5.0, 4.5, 4.6];
+              return ratings[indexB] - ratings[indexA];
+            });
+            break;
+            
+          case 'popular':
+          default:
+            // Restore original order
+            sortedRooms.sort((a, b) => {
+              return roomCards.indexOf(a) - roomCards.indexOf(b);
+            });
+            break;
+        }
+        
+        // Remove existing cards
+        roomContainer.innerHTML = '';
+        
+        // Add sorted cards
+        sortedRooms.forEach(room => {
+          const wrapper = document.createElement('div');
+          wrapper.className = 'col-md-6';
+          wrapper.appendChild(room);
+          roomContainer.appendChild(wrapper);
+        });
+        
+        // If list view is active, regenerate it
+        if (!roomListView.classList.contains('d-none')) {
+          generateListView();
+        }
+      });
+    }
+  });
+</script>
 {% endblock %}

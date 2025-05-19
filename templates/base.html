@@ -4,126 +4,234 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="هتل آسمان، مجهزترین و لوکس‌ترین هتل با امکانات رفاهی کامل و خدمات VIP در تهران" />
+    <meta name="keywords" content="هتل لوکس، رزرو هتل، اتاق هتل، رزرو آنلاین، هتل تهران، هتل آسمان" />
+    <meta name="author" content="علیرضا نوراحمدی" />
+    <meta name="robots" content="index, follow" />
+    <meta property="og:title" content="هتل لوکس آسمان | رزرو آنلاین اتاق" />
+    <meta property="og:description" content="هتل آسمان، مجهزترین و لوکس‌ترین هتل با امکانات رفاهی کامل و خدمات VIP در تهران" />
+    <meta property="og:image" content="{% static 'images/hotel-hero.jpg' %}" />
+    <meta property="og:url" content="{{ request.build_absolute_uri }}" />
+    <link rel="canonical" href="{{ request.build_absolute_uri }}" />
     <title>
       {% block title %}
-        سیستم هتل
+        هتل لوکس آسمان
       {% endblock %}
     </title>
 
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
-
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <!-- Custom CSS -->
     <link rel="stylesheet" href="{% static 'css/styles.css' %}" />
 
     {% block extra_head %}{% endblock %}
   </head>
   <body>
-    <header class="bg-light p-3 mb-4 border-bottom">
+    <!-- Top Navigation Bar -->
+    <nav class="navbar navbar-expand-lg fixed-top">
       <div class="container">
-        <h1 class="h3">🌟 سیستم مدیریت هتل</h1>
-
-        <nav class="navbar navbar-expand-lg navbar-light bg-light">
-          <div class="container-fluid p-0">
-            <button
-              class="navbar-toggler"
-              type="button"
-              data-bs-toggle="collapse"
-              data-bs-target="#navbarNav"
-              aria-controls="navbarNav"
-              aria-expanded="false"
-              aria-label="Toggle navigation"
-            >
-              <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-              <ul class="navbar-nav">
-                <li class="nav-item">
-                  <a class="nav-link" href="{% url 'room_list' %}">🏨 لیست اتاق‌ها</a>
-                </li>
-                {% if is_staff %}
-                  <li class="nav-item">
-                    <a class="nav-link" href="{% url 'service_list' %}">🧰 مدیریت سرویس‌ها</a>
-                  </li>
-                {% endif %}
-                {% if user.is_manager %}
-                  <li class="nav-item">
-                    <a class="nav-link" href="{% url 'room_list' %}">🛠️ مدیریت اتاق‌ها</a>
-                  </li>
-                  <li class="nav-item">
-                    <a class="nav-link" href="{% url 'staff_dashboard' %}">📊 داشبورد مدیریت</a>
-                  </li>
-                {% endif %}
-
-                {% if user.is_authenticated %}
-                  <li class="nav-item">
-                    <a class="nav-link" href="{% url 'my_bookings' %}">📒 رزروهای من</a>
-                  </li>
-                  <li class="nav-item nav-link disabled">👋 سلام {{ user.username }}</li>
-                  <li class="nav-item">
-                    <a class="nav-link" href="{% url 'logout' %}">🚪 خروج</a>
-                  </li>
-                {% else %}
-                  <li class="nav-item">
-                    <a class="nav-link" href="{% url 'login' %}">🔐 ورود</a>
-                  </li>
-                  <li class="nav-item">
-                    <a class="nav-link" href="{% url 'register' %}">📝 ثبت‌نام</a>
-                  </li>
-                {% endif %}
-              </ul>
-            </div>
-          </div>
-        </nav>
+        <a class="navbar-brand" href="{% url 'home' %}">
+          <span class="hotel-logo"><i class="fas fa-hotel"></i> هتل آسمان</span>
+        </a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+          aria-controls="navbarNav"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'home' %}"><i class="fas fa-home"></i> خانه</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'room_list' %}"><i class="fas fa-bed"></i> اتاق‌ها</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#services"><i class="fas fa-concierge-bell"></i> خدمات</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#about"><i class="fas fa-info-circle"></i> درباره ما</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#contact"><i class="fas fa-envelope"></i> تماس با ما</a>
+            </li>
+            
+            {% if user.is_authenticated %}
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  <i class="fas fa-user-circle"></i> {{ user.username }}
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end">
+                  <li><a class="dropdown-item" href="{% url 'my_bookings' %}"><i class="fas fa-calendar-check"></i> رزروهای من</a></li>
+                  
+                  {% if user_roles.is_staff %}
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" href="{% url 'staff_dashboard' %}"><i class="fas fa-tasks"></i> پنل کارمندان</a></li>
+                    <li><a class="dropdown-item" href="{% url 'service_list' %}"><i class="fas fa-concierge-bell"></i> مدیریت خدمات</a></li>
+                  {% endif %}
+                  
+                  {% if user_roles.is_manager %}
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" href="{% url 'manager_dashboard' %}"><i class="fas fa-chart-line"></i> پنل مدیریت</a></li>
+                    <li><a class="dropdown-item" href="{% url 'room_list' %}"><i class="fas fa-door-open"></i> مدیریت اتاق‌ها</a></li>
+                  {% endif %}
+                  
+                  <li><hr class="dropdown-divider"></li>
+                  <li><a class="dropdown-item" href="{% url 'logout' %}"><i class="fas fa-sign-out-alt"></i> خروج</a></li>
+                </ul>
+              </li>
+            {% else %}
+              <li class="nav-item">
+                <a class="nav-link btn btn-outline-primary login-btn" href="{% url 'login' %}"><i class="fas fa-sign-in-alt"></i> ورود</a>
+              </li>
+              <li class="nav-item ms-2">
+                <a class="nav-link btn btn-primary register-btn" href="{% url 'register' %}"><i class="fas fa-user-plus"></i> ثبت‌نام</a>
+              </li>
+            {% endif %}
+          </ul>
+        </div>
       </div>
-    </header>
+    </nav>
+
+    <!-- Messages Section -->
+    {% if messages %}
+      <div class="messages-container">
+        {% for message in messages %}
+          <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
 
     <main>
       {% block hero %}
       <section class="hero">
-        <div class="hero-content fade-in-section">
-          <h1>سیستم مدیریت هتل</h1>
-          <p>به بهترین تجربه اقامت خوش آمدید</p>
-          <a href="{% url 'room_list' %}" class="btn btn-primary btn-lg mt-3">رزرو اتاق</a>
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+          <h1 class="display-4">تجربه‌ای به یاد ماندنی در هتل آسمان</h1>
+          <p class="lead">آرامش، آسایش و لوکس‌ترین امکانات در انتظار شماست</p>
+          <div class="hero-buttons">
+            <a href="{% url 'room_list' %}" class="btn btn-primary btn-lg"><i class="fas fa-bed"></i> رزرو اتاق</a>
+            <a href="#services" class="btn btn-outline-light btn-lg ms-2"><i class="fas fa-concierge-bell"></i> خدمات ما</a>
+          </div>
         </div>
       </section>
       {% endblock %}
 
-      <div class="container mt-4">
+      <div class="container mt-5">
         {% block content %}
-          <!-- محتوای هر صفحه اینجا نمایش داده می‌شه -->
-        {% endblock  %}
+          <!-- محتوای صفحات اینجا نمایش داده می‌شود -->
+        {% endblock %}
       </div>
     </main>
 
-    <footer class="bg-light p-3 mt-4 border-top text-center">
-      <p>© 2025 - سیستم هتل Django ساخته شده توسط علیرضا نوراحمدی</p>
+    <footer class="footer mt-5">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-4">
+            <h5><i class="fas fa-hotel"></i> هتل آسمان</h5>
+            <p>بهترین تجربه اقامت با امکانات مدرن و خدمات حرفه‌ای در انتظار شماست.</p>
+            <div class="social-icons">
+              <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
+              <a href="#" class="social-icon"><i class="fab fa-telegram"></i></a>
+              <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
+              <a href="#" class="social-icon"><i class="fab fa-facebook"></i></a>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <h5>دسترسی سریع</h5>
+            <ul class="footer-links">
+              <li><a href="{% url 'home' %}"><i class="fas fa-chevron-left"></i> صفحه اصلی</a></li>
+              <li><a href="{% url 'room_list' %}"><i class="fas fa-chevron-left"></i> اتاق‌ها</a></li>
+              <li><a href="#services"><i class="fas fa-chevron-left"></i> خدمات</a></li>
+              <li><a href="#about"><i class="fas fa-chevron-left"></i> درباره ما</a></li>
+              <li><a href="#contact"><i class="fas fa-chevron-left"></i> تماس با ما</a></li>
+            </ul>
+          </div>
+          <div class="col-md-4">
+            <h5>اطلاعات تماس</h5>
+            <ul class="contact-info">
+              <li><i class="fas fa-map-marker-alt"></i> تهران، خیابان ولیعصر، هتل آسمان</li>
+              <li><i class="fas fa-phone"></i> ۰۲۱-۱۲۳۴۵۶۷۸</li>
+              <li><i class="fas fa-envelope"></i> info@aseman-hotel.com</li>
+              <li><i class="fas fa-clock"></i> پذیرش ۲۴ ساعته</li>
+            </ul>
+          </div>
+        </div>
+        <hr>
+        <div class="row">
+          <div class="col-12 text-center">
+            <p class="copyright">© ۱۴۰۴ هتل آسمان - تمامی حقوق محفوظ است. <span>طراحی و توسعه توسط علیرضا نوراحمدی</span></p>
+          </div>
+        </div>
+      </div>
     </footer>
 
-    <!-- Bootstrap JS Bundle with Popper -->
+    <!-- Back to top button -->
+    <a href="#" class="back-to-top" aria-label="بازگشت به بالا">
+      <i class="fas fa-chevron-up"></i>
+    </a>
+
+    <!-- JavaScript Libraries -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
+    <!-- Custom JavaScript -->
     <script>
-      // Scroll fade-in animation
-      document.addEventListener('DOMContentLoaded', function () {
-        const faders = document.querySelectorAll('.fade-in-section');
-        const appearOptions = {
-          threshold: 0.1,
-          rootMargin: "0px 0px -50px 0px"
-        };
-        const appearOnScroll = new IntersectionObserver(function(entries, appearOnScroll) {
-          entries.forEach(entry => {
-            if (!entry.isIntersecting) {
-              return;
-            } else {
-              entry.target.classList.add('is-visible');
-              appearOnScroll.unobserve(entry.target);
-            }
-          });
-        }, appearOptions);
+      document.addEventListener('DOMContentLoaded', function() {
+        // Navbar scroll behavior
+        const navbar = document.querySelector('.navbar');
+        window.addEventListener('scroll', function() {
+          if (window.scrollY > 50) {
+            navbar.classList.add('navbar-scrolled');
+          } else {
+            navbar.classList.remove('navbar-scrolled');
+          }
+        });
 
-        faders.forEach(fader => {
-          appearOnScroll.observe(fader);
+        // Auto-hide messages after 5 seconds
+        const messages = document.querySelectorAll('.alert');
+        messages.forEach(message => {
+          setTimeout(() => {
+            const closeButton = message.querySelector('.btn-close');
+            if (closeButton) {
+              closeButton.click();
+            }
+          }, 5000);
+        });
+
+        // Back to top button
+        const backToTopButton = document.querySelector('.back-to-top');
+        window.addEventListener('scroll', function() {
+          if (window.scrollY > 300) {
+            backToTopButton.classList.add('show');
+          } else {
+            backToTopButton.classList.remove('show');
+          }
+        });
+
+        backToTopButton.addEventListener('click', function(e) {
+          e.preventDefault();
+          window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+          });
+        });
+
+        // Initialize tooltips
+        const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        tooltipTriggerList.map(function(tooltipTriggerEl) {
+          return new bootstrap.Tooltip(tooltipTriggerEl);
         });
       });
     </script>
