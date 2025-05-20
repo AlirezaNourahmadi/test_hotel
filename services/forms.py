@@ -9,3 +9,8 @@ class ServiceForm(forms.ModelForm):
             'description': forms.Textarea(attrs={'rows': 3}),
             'done': forms.CheckboxInput(),
         }
+
+class StaffServiceUpdateForm(forms.ModelForm):
+    class Meta:
+        model = Service
+        fields = ['done', 'completed_at']

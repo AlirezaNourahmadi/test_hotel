@@ -51,7 +51,7 @@ def manager_dashboard_view(request):
 
 @login_required
 def staff_dashboard_view(request):
-    return render(request, 'accounts/staffdashboard.html')
+    return render(request, 'staff/staff_dashboard.html')
 
 @login_required
 def guest_dashboard_view(request):

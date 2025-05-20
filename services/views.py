@@ -91,3 +91,11 @@ def service_delete_view(request, pk):
     except Exception as e:
         messages.error(request, f"خطا در یافتن خدمت: {str(e)}")
         return redirect('service_list')
+    
+@manager_required(login_url=reverse_lazy('create'))
+def service_update_view(request):   
+    pass
+
+    
+    
+    

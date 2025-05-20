@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block title %}ویرایش سرویس{% endblock %}
+
+{% block content %}
+<h2>✏️ ویرایش سرویس</h2>
+
+<form method="POST">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit">ذخیره تغییرات</button>
+</form>
+
+<a href="{% url 'staff_dashboard' %}">بازگشت به داشبورد</a>
+{% endblock %}

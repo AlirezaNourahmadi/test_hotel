@@ -1,10 +1,11 @@
 from django.contrib.auth.decorators import user_passes_test
-from django.shortcuts import render, redirect
+from django.shortcuts import get_object_or_404, render, redirect
 from django.urls import reverse_lazy
 from django.contrib import messages
 from bookings.models import Booking
 from services.models import Service
 from datetime import date
+from services.forms import StaffServiceUpdateForm
 
 
 def staff_required(function=None, redirect_field_name='next', login_url=None):
@@ -49,3 +50,18 @@ def staff_dashboard_view(request):
     except Exception as e:
         messages.error(request, f"خطا در بارگیری اطلاعات داشبورد: {str(e)}")
         return redirect('home')
+    
+    
+@staff_required
+def staff_service_update_view(request, pk):
+    service = get_object_or_404(Service, pk=pk, assigned_to=request.user)
+
+    if request.method == 'POST':
+        form = StaffServiceUpdateForm(request.POST, instance=service)
+        if form.is_valid():
+            form.save()
+            return redirect('staff_dashboard')
+    else:
+        form = StaffServiceUpdateForm(instance=service)
+    
+    return render(request, 'staff/staff_service_update.html', {'form': form})
