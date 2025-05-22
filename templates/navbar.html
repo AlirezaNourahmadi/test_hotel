@@ -1,0 +1,70 @@
+<nav class="navbar navbar-expand-lg fixed-top">
+  <div class="container">
+    <a class="navbar-brand" href="{% url 'home' %}">
+      <span class="hotel-logo"><i class="fas fa-hotel"></i> هتل آسمان</span>
+    </a>
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#navbarNav"
+      aria-controls="navbarNav"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'home' %}"><i class="fas fa-home"></i> خانه</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'room_list' %}"><i class="fas fa-bed"></i> اتاق‌ها</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#services"><i class="fas fa-concierge-bell"></i> خدمات</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#about"><i class="fas fa-info-circle"></i> درباره ما</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#contact"><i class="fas fa-envelope"></i> تماس با ما</a>
+        </li>
+        
+        {% if user.is_authenticated %}
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              <i class="fas fa-user-circle"></i> {{ user.username }}
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end">
+              <li><a class="dropdown-item" href="{% url 'my_bookings' %}"><i class="fas fa-calendar-check"></i> رزروهای من</a></li>
+              
+              {% if user_roles.is_staff %}
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item" href="{% url 'staff_dashboard' %}"><i class="fas fa-tasks"></i> پنل کارمندان</a></li>
+                <li><a class="dropdown-item" href="{% url 'service_list' %}"><i class="fas fa-concierge-bell"></i> مدیریت خدمات</a></li>
+              {% endif %}
+              
+              {% if user_roles.is_manager %}
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item" href="{% url 'manager_dashboard' %}"><i class="fas fa-chart-line"></i> پنل مدیریت</a></li>
+                <li><a class="dropdown-item" href="{% url 'room_list' %}"><i class="fas fa-door-open"></i> مدیریت اتاق‌ها</a></li>
+              {% endif %}
+              
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item" href="{% url 'logout' %}"><i class="fas fa-sign-out-alt"></i> خروج</a></li>
+            </ul>
+          </li>
+        {% else %}
+          <li class="nav-item">
+            <a class="nav-link btn btn-outline-primary login-btn" href="{% url 'login' %}"><i class="fas fa-sign-in-alt"></i> ورود</a>
+          </li>
+          <li class="nav-item ms-2">
+            <a class="nav-link btn btn-primary register-btn" href="{% url 'register' %}"><i class="fas fa-user-plus"></i> ثبت‌نام</a>
+          </li>
+        {% endif %}
+      </ul>
+    </div>
+  </div>
+</nav>

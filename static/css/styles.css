@@ -232,7 +232,7 @@ section {
   color: white;
   text-align: center;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
   margin-top: -76px; /* Compensate for navbar height */
   padding-top: 76px;
