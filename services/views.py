@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import Service
-from .forms import ServiceForm
+from .forms import ServiceForm 
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.urls import reverse_lazy
 from django.contrib import messages
@@ -96,7 +96,8 @@ def service_delete_view(request, pk):
 def service_update_view(request):   
     pass
 
-    
+def guest_services_details(request):
+    return render(request, 'services/guest_service_details.html')
     
     
 

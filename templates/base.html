@@ -31,19 +31,26 @@
   <body>
     <!-- navbar Section -->
     {% include 'navbar.html' %}
-    
+
     <!-- Messages Section -->
     {% if messages %}
-      <div class="messages-container d-flex justify-content-center">
+    <div class="position-fixed top-0 start-50 translate-middle-x mt-3 w-100 d-flex justify-content-center" style="z-index: 9999;">
+      <div class="container" style="max-width: 600px;">
         {% for message in messages %}
-          <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-
+          <div class="alert alert-{{ message.tags }} alert-dismissible fade show text-center" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="بستن"></button>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  {% endif %}
     <main>
       {% block hero %}
-      <section class="hero">
+      <section class="hero pt-5 mt-5">
         <div class="hero-overlay"></div>
-        <div class="hero-content">
-          <h1 class="display-4\">تجربه‌ای به یاد ماندنی در هتل آسمان</h1>
+        <div class="hero-content text-center">
+          <h1 class="display-4 text-center">تجربه‌ای به یاد ماندنی در هتل آسمان</h1>
           <p class="lead">آرامش، آسایش و لوکس‌ترین امکانات در انتظار شماست</p>
           <div class="hero-buttons">
             <a href="{% url 'room_list' %}" class="btn btn-primary btn-lg"><i class="fas fa-bed"></i> رزرو اتاق</a>
