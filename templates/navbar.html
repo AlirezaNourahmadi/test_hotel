@@ -19,6 +19,7 @@
         <li class="nav-item">
           <a class="nav-link" href="{% url 'home' %}"><i class="fas fa-home"></i> خانه</a>
         </li>
+        
         <li class="nav-item">
           <a class="nav-link" href="{% url 'room_list' %}"><i class="fas fa-bed"></i> اتاق‌ها</a>
         </li>
@@ -26,7 +27,7 @@
           <a class="nav-link" href="{% url "guest_services_details" %}"><i class="fas fa-concierge-bell"></i> خدمات</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#about"><i class="fas fa-info-circle"></i> درباره ما</a>
+          <a class="nav-link" href="{% url 'about_us' %}"><i class="fas fa-info-circle"></i> درباره ما</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="#contact"><i class="fas fa-envelope"></i> تماس با ما</a>

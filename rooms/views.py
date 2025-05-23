@@ -45,7 +45,6 @@ def is_manager(user):
 # ✅ فقط برای مدیران: لیست اتاق‌ها برای CRUD
 
 
-@manager_required(login_url=reverse_lazy('login'))
 def room_list_view(request):
     rooms = Room.objects.all()
     return render(request, 'rooms/room_list.html', {'rooms': rooms})

@@ -61,3 +61,4 @@ def guest_dashboard_view(request):
 def public_rooms_view(request):
     rooms = Room.objects.all()
     return render(request, 'rooms/public_room_list.html', {'rooms': rooms})
+

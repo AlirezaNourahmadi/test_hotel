@@ -1,20 +1,36 @@
 from django.db import models
 
-
-# Create your models here.
 class Room(models.Model):
     ROOM_TYPES = [
-        ('SGL', 'SINGLE'),
-        ('DBL', 'DOUBLE'),
-        ('DLX', 'DELUXE'),
+        ('lux_double', 'اتاق دبل لوکس'),
+        ('suite_city', 'سوییت با منظره شهر'),
+        ('single_modern', 'اتاق سینگل مدرن'),
+        ('royal_king', 'رویال کینگ'),
+        ('junior_suite', 'جونیور سوییت'),
+        ('family_suite', 'سوییت خانوادگی'),
     ]
-    number = models.IntegerField(unique=True)
-    room_type = models.CharField(max_length=3,choices=ROOM_TYPES)
-    is_available = models.BooleanField(default=True)
-    price_per_night = models.DecimalField(max_digits=7, decimal_places=2)
-    capacity = models.PositiveIntegerField(default=1)
-    description = models.TextField(blank=True , null=True)
     
+    title = models.CharField(max_length=100,null=True,blank=True)
+    room_type = models.CharField(max_length=30, choices=ROOM_TYPES)
+    bed_type = models.CharField(max_length=50 , default="اتاق سینگل مدرن")
+    size = models.IntegerField(help_text="متراژ بر حسب متر مربع",null=True,blank=True)
+    capacity = models.IntegerField(null=True,blank=True)
+    view = models.CharField(max_length=100,null=True,blank=True)
+    description = models.TextField(null=True,blank=True)
+    price_per_night = models.IntegerField(null=True,blank=True)
+    features = models.TextField(null=True,blank=True)  # JSON یا String ساده
+    
+    # عکس و گالری می‌تونه جدا باشه
+
     def __str__(self):
-        return f"Room {self.number} ({self.get_room_type_display()})"
-    
+        return self.title
+
+
+# Model for storing multiple images per Room
+class RoomImage(models.Model):
+    room = models.ForeignKey(Room, on_delete=models.CASCADE, related_name='images')
+    image = models.ImageField(upload_to='room_images/')
+    caption = models.CharField(max_length=255, blank=True)
+
+    def __str__(self):
+        return f"Image for {self.room.title}"

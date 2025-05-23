@@ -3,9 +3,10 @@ def user_roles(request):
     roles = {
         'is_manager': False,
         'is_staff': False,
-        'is_guest': False
+        'is_guest': False,
+        'is_anonymous': not user.is_authenticated
     }
-    
+
     if user.is_authenticated:
         # Check session first, then fall back to database
         roles['is_manager'] = request.session.get('is_manager', False) or user.is_manager
@@ -15,5 +16,5 @@ def user_roles(request):
         # Update session with current values
         request.session['is_manager'] = roles['is_manager']
         request.session['is_staff'] = roles['is_staff']
-    
-    return {"user_roles":roles}
+
+    return {"user_roles": roles}
