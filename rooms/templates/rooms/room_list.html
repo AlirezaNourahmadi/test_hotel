@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
-
+{% load humanize %}
 {% block title %}لیست اتاق‌های هتل آسمان | رزرو آنلاین{% endblock %}
 
 {% block extra_head %}
@@ -250,7 +250,7 @@
     <div class="col-lg-4">
       <div class="filter-container">
         <h3 class="filter-title">جستجو و فیلتر</h3>
-        <form>
+        <form method="GET">
           <!-- Date Range -->
           <div class="mb-4">
             <h5>تاریخ اقامت</h5>
@@ -340,8 +340,8 @@
               </div>
               
               <div class="range-input">
-                <input type="range" class="min" min="500000" max="5000000" value="500000" step="100000">
-                <input type="range" class="max" min="500000" max="5000000" value="3000000" step="100000">
+                <input type="range" class="min" name="price_min" min="500000" max="5000000" value="500000" step="100000">
+                <input type="range" class="max" name="price_max" min="500000" max="5000000" value="3000000" step="100000">
               </div>
               
               <div class="d-flex justify-content-between mt-2">
@@ -409,7 +409,7 @@
       <div class="sort-container">
         <div class="form-inline">
           <label for="sort" class="me-2">مرتب‌سازی:</label>
-          <select class="form-select" id="sort">
+          <select class="form-select" id="sort" name="sort">
             <option value="popular">محبوب‌ترین</option>
             <option value="price-low">قیمت: کم به زیاد</option>
             <option value="price-high">قیمت: زیاد به کم</option>
@@ -430,143 +430,29 @@
       <!-- Room Grid -->
       <div class="room-grid view-active">
         <div class="row g-4">
-          <!-- Room 1 -->
+          {% for room in page_obj %}
           <div class="col-md-6">
             <div class="room-card">
               <div class="room-card-img">
-                <img src="{% static 'images/room-1.jpg' %}" alt="اتاق دبل لوکس">
-                <div class="room-price">۱,۲۰۰,۰۰۰ تومان / شب</div>
+                <img src="{{ room.cover_image.url }}" alt="{{ room.name }}">
+                <div class="room-price">{{ room.price_per_night|intcomma }} تومان / شب</div>
               </div>
               <div class="room-card-body">
-                <h3 class="room-card-title">اتاق دبل لوکس</h3>
+                <h3 class="room-card-title">{{ room.name }}</h3>
                 <div class="room-card-features">
-                  <div class="room-feature"><i class="fas fa-bed"></i> تخت دبل کینگ</div>
-                  <div class="room-feature"><i class="fas fa-ruler-combined"></i> ۳۵ متر مربع</div>
-                  <div class="room-feature"><i class="fas fa-users"></i> ۲ مهمان</div>
+                  <div class="room-feature"><i class="fas fa-bed"></i> {{ room.get_bed_type_display }}</div>
+                  <div class="room-feature"><i class="fas fa-ruler-combined"></i> {{ room.size }} متر مربع</div>
+                  <div class="room-feature"><i class="fas fa-users"></i> {{ room.capacity }} مهمان</div>
                 </div>
-                <p class="room-card-text">لذت اقامت در اتاقی لوکس با منظره شهر، دسترسی به خدمات ویژه و صبحانه رایگان.</p>
+                <p class="room-card-text">{{ room.description|truncatechars:120 }}</p>
                 <div class="room-card-footer d-flex">
-                  <a href="{% url 'room_detail' 1 %}" class="btn-room-details flex-grow-1 me-2">مشاهده جزئیات</a>
-                  <a href="{% url 'book_room' 1 %}" class="btn booking-btn"><i class="fas fa-calendar-check"></i> رزرو</a>
+                  <a href="{% url 'room_detail' room.id %}" class="btn-room-details flex-grow-1 me-2">مشاهده جزئیات</a>
+                  <a href="{% url 'book_room' room.id %}" class="booking-btn"><i class="fas fa-calendar-check"></i> رزرو</a>
                 </div>
               </div>
             </div>
           </div>
-          
-          <!-- Room 2 -->
-          <div class="col-md-6">
-            <div class="room-card">
-              <div class="room-card-img">
-                <img src="{% static 'images/room-2.jpg' %}" alt="سوئیت جونیور">
-                <div class="room-price">۱,۵۰۰,۰۰۰ تومان / شب</div>
-              </div>
-              <div class="room-card-body">
-                <h3 class="room-card-title">سوئیت جونیور</h3>
-                <div class="room-card-features">
-                  <div class="room-feature"><i class="fas fa-bed"></i> تخت کینگ سایز</div>
-                  <div class="room-feature"><i class="fas fa-ruler-combined"></i> ۴۵ متر مربع</div>
-                  <div class="room-feature"><i class="fas fa-users"></i> ۲ مهمان</div>
-                </div>
-                <p class="room-card-text">سوئیت مدرن با فضای نشیمن جداگانه، منظره پانوراما و امکانات رفاهی عالی.</p>
-                <div class="room-card-footer d-flex">
-                  <a href="{% url 'room_detail' 2 %}" class="btn-room-details flex-grow-1 me-2">مشاهده جزئیات</a>
-                  <a href="{% url 'book_room' 2 %}" class="booking-btn"><i class="fas fa-calendar-check"></i> رزرو</a>
-                </div>
-              </div>
-            </div>
-          </div>
-          
-          <!-- Room 3 -->
-          <div class="col-md-6">
-            <div class="room-card">
-              <div class="room-card-img">
-                <img src="{% static 'images/room-3.jpg' %}" alt="سوئیت خانوادگی">
-                <div class="room-price">۱,۸۰۰,۰۰۰ تومان / شب</div>
-              </div>
-              <div class="room-card-body">
-                <h3 class="room-card-title">سوئیت خانوادگی</h3>
-                <div class="room-card-features">
-                  <div class="room-feature"><i class="fas fa-bed"></i> ۱ تخت کینگ + ۲ تخت سینگل</div>
-                  <div class="room-feature"><i class="fas fa-ruler-combined"></i> ۵۵ متر مربع</div>
-                  <div class="room-feature"><i class="fas fa-users"></i> ۴ مهمان</div>
-                </div>
-                <p class="room-card-text">سوئیت بزرگ و راحت برای خانواده‌ها با فضای جداگانه نشیمن و انواع امکانات رفاهی.</p>
-                <div class="room-card-footer d-flex">
-                  <a href="{% url 'room_detail' 3 %}" class="btn-room-details flex-grow-1 me-2">مشاهده جزئیات</a>
-                  <a href="{% url 'book_room' 3 %}" class="booking-btn"><i class="fas fa-calendar-check"></i> رزرو</a>
-                </div>
-              </div>
-            </div>
-          </div>
-          
-          <!-- Room 4 -->
-          <div class="col-md-6">
-            <div class="room-card">
-              <div class="room-card-img">
-                <img src="{% static 'images/room-4.jpg' %}" alt="سوئیت پرزیدنت">
-                <div class="room-price">۲,۵۰۰,۰۰۰ تومان / شب</div>
-              </div>
-              <div class="room-card-body">
-                <h3 class="room-card-title">سوئیت پرزیدنت</h3>
-                <div class="room-card-features">
-                  <div class="room-feature"><i class="fas fa-bed"></i> تخت کینگ سایز</div>
-                  <div class="room-feature"><i class="fas fa-ruler-combined"></i> ۸۰ متر مربع</div>
-                  <div class="room-feature"><i class="fas fa-users"></i> ۲ مهمان</div>
-                </div>
-                <p class="room-card-text">لوکس‌ترین سوئیت هتل با منظره پانوراما، جکوزی اختصاصی و خدمات VIP برای میهمانان ویژه.</p>
-                <div class="room-card-footer d-flex">
-                  <a href="{% url 'room_detail' 4 %}" class="btn-room-details flex-grow-1 me-2">مشاهده جزئیات</a>
-                  <a href="{% url 'book_room' 4 %}" class="booking-btn"><i class="fas fa-calendar-check"></i> رزرو</a>
-                </div>
-              </div>
-            </div>
-          </div>
-          
-          <!-- Room 5 -->
-          <div class="col-md-6">
-            <div class="room-card">
-              <div class="room-card-img">
-                <img src="{% static 'images/room-5.jpg' %}" alt="اتاق استاندارد">
-                <div class="room-price">۹۰۰,۰۰۰ تومان / شب</div>
-              </div>
-              <div class="room-card-body">
-                <h3 class="room-card-title">اتاق استاندارد</h3>
-                <div class="room-card-features">
-                  <div class="room-feature"><i class="fas fa-bed"></i> تخت دبل</div>
-                  <div class="room-feature"><i class="fas fa-ruler-combined"></i> ۲۸ متر مربع</div>
-                  <div class="room-feature"><i class="fas fa-users"></i> ۲ مهمان</div>
-                </div>
-                <p class="room-card-text">اتاق راحت و مقرون به صرفه با تمام امکانات ضروری برای اقامتی دلنشین.</p>
-                <div class="room-card-footer d-flex">
-                  <a href="{% url 'room_detail' 5 %}" class="btn-room-details flex-grow-1 me-2">مشاهده جزئیات</a>
-                  <a href="{% url 'book_room' 5 %}" class="booking-btn"><i class="fas fa-calendar-check"></i> رزرو</a>
-                </div>
-              </div>
-            </div>
-          </div>
-          
-          <!-- Room 6 -->
-          <div class="col-md-6">
-            <div class="room-card">
-              <div class="room-card-img">
-                <img src="{% static 'images/room-6.jpg' %}" alt="اتاق توئین">
-                <div class="room-price">۱,۰۰۰,۰۰۰ تومان / شب</div>
-              </div>
-              <div class="room-card-body">
-                <h3 class="room-card-title">اتاق توئین</h3>
-                <div class="room-card-features">
-                  <div class="room-feature"><i class="fas fa-bed"></i> ۲ تخت سینگل</div>
-                  <div class="room-feature"><i class="fas fa-ruler-combined"></i> ۳۰ متر مربع</div>
-                  <div class="room-feature"><i class="fas fa-users"></i> ۲ مهمان</div>
-                </div>
-                <p class="room-card-text">اتاق با دو تخت جداگانه، مناسب برای دوستان یا همکاران با امکانات کامل.</p>
-                <div class="room-card-footer d-flex">
-                  <a href="{% url 'room_detail' 6 %}" class="btn-room-details flex-grow-1 me-2">مشاهده جزئیات</a>
-                  <a href="{% url 'book_room' 6 %}" class="booking-btn"><i class="fas fa-calendar-check"></i> رزرو</a>
-                </div>
-              </div>
-            </div>
-          </div>
+          {% endfor %}
         </div>
       </div>
       
@@ -578,19 +464,29 @@
       <!-- Pagination -->
       <div class="pagination-container">
         <ul class="pagination">
-          <li class="page-item">
-            <a class="page-link" href="#" aria-label="Previous">
-              <i class="fas fa-chevron-right"></i>
-            </a>
-          </li>
-          <li class="page-item active"><a class="page-link" href="#">۱</a></li>
-          <li class="page-item"><a class="page-link" href="#">۲</a></li>
-          <li class="page-item"><a class="page-link" href="#">۳</a></li>
-          <li class="page-item">
-            <a class="page-link" href="#" aria-label="Next">
-              <i class="fas fa-chevron-left"></i>
-            </a>
-          </li>
+          {% if page_obj.has_previous %}
+            <li class="page-item">
+              <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="قبلی">
+                <i class="fas fa-chevron-right"></i>
+              </a>
+            </li>
+          {% endif %}
+
+          {% for num in page_obj.paginator.page_range %}
+            {% if page_obj.number == num %}
+              <li class="page-item active"><a class="page-link" href="#">{{ num }}</a></li>
+            {% else %}
+              <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+            {% endif %}
+          {% endfor %}
+
+          {% if page_obj.has_next %}
+            <li class="page-item">
+              <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="بعدی">
+                <i class="fas fa-chevron-left"></i>
+              </a>
+            </li>
+          {% endif %}
         </ul>
       </div>
     </div>

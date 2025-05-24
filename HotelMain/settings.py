@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "Home.apps.HomeConfig",
+    'django.contrib.humanize',
     "payments",
     "reviews",
     "rooms",

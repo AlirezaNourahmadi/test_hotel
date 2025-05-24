@@ -5,7 +5,7 @@ from functools import wraps
 from .models import Room
 from .forms import RoomCreateForm
 from django.contrib.auth import get_user_model
-
+from django.core.paginator import Paginator
 User = get_user_model()
 
 def manager_required(function=None, redirect_field_name='next', login_url=None):
@@ -47,7 +47,10 @@ def is_manager(user):
 
 def room_list_view(request):
     rooms = Room.objects.all()
-    return render(request, 'rooms/room_list.html', {'rooms': rooms})
+    paginator = Paginator(rooms, 6)     #number of rooms in each page
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    return render(request, 'rooms/room_list.html', {'page_obj':page_obj})
 
 
 @manager_required(login_url=reverse_lazy('login'))
