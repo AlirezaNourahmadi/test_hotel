@@ -475,7 +475,11 @@
           <div class="col-md-6">
             <div class="room-card">
               <div class="room-card-img">
-                <img src="{{ room.cover_image.url }}" alt="{{ room.name }}">
+{% if room.images.all %}
+  <img src="{{ room.images.all.0.image.url }}" alt="{{ room.title }}">
+{% else %}
+  <img src="/media/default-room.png" alt="No image available">
+{% endif %}
                 <div class="room-price">{{ room.price_per_night|intcomma }} تومان / شب</div>
               </div>
               <div class="room-card-body">
@@ -485,8 +489,9 @@
                   <div class="room-feature"><i class="fas fa-ruler-combined"></i> {{ room.size }} متر مربع</div>
                   <div class="room-feature"><i class="fas fa-users"></i> {{ room.capacity }} مهمان</div>
                   <div class="room-feature"><i class="fa-solid fa-coins"></i>قیمت هر شب اقامت : {{room.price_per_night|intcomma}}</div>
+                  <div class="room-feature"><i class="fa-solid fa-info"></i>{{room.description|truncatechars:120}}</div>
                 </div>
-                <p class="room-card-text">{{ room.description|truncatechars:120 }}</p>
+                
                 <div class="room-card-footer d-flex">
                   <a href="{% url 'room_detail' room.id %}" class="btn-room-details flex-grow-1 me-2">مشاهده جزئیات</a>
                   <a href="{% url 'book_room' room.id %}" class="booking-btn"><i class="fas fa-calendar-check"></i> رزرو</a>
