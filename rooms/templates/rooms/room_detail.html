@@ -1,5 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load humanize %}
+{% load l10n %}
 
 {% block title %}{{ room.title }} | هتل آسمان{% endblock %}
 
@@ -351,21 +353,15 @@
       <div class="room-gallery">
         <div class="swiper main-swiper">
           <div class="swiper-wrapper">
+            {% for image in room.images.all %}
+            <div class="swiper-slide">
+              <img src="{{ image.image.url }}" alt="{{ image.caption|default:room.title }}">
+            </div>
+            {% empty %}
             <div class="swiper-slide">
               <img src="{% static 'images/room-detail-1.jpg' %}" alt="تصویر اتاق">
             </div>
-            <div class="swiper-slide">
-              <img src="{% static 'images/room-detail-2.jpg' %}" alt="تصویر اتاق">
-            </div>
-            <div class="swiper-slide">
-              <img src="{% static 'images/room-detail-3.jpg' %}" alt="تصویر اتاق">
-            </div>
-            <div class="swiper-slide">
-              <img src="{% static 'images/room-detail-4.jpg' %}" alt="تصویر اتاق">
-            </div>
-            <div class="swiper-slide">
-              <img src="{% static 'images/room-detail-5.jpg' %}" alt="تصویر اتاق">
-            </div>
+            {% endfor %}
           </div>
           <div class="swiper-button-next"></div>
           <div class="swiper-button-prev"></div>
@@ -375,54 +371,63 @@
         </div>
         <div thumbsSlider="" class="swiper thumb-swiper">
           <div class="swiper-wrapper">
+            {% for image in room.images.all %}
+            <div class="swiper-slide">
+              <img src="{{ image.image.url }}" alt="{{ image.caption|default:room.title }}">
+            </div>
+            {% empty %}
             <div class="swiper-slide">
               <img src="{% static 'images/room-detail-1.jpg' %}" alt="تصویر اتاق">
             </div>
-            <div class="swiper-slide">
-              <img src="{% static 'images/room-detail-2.jpg' %}" alt="تصویر اتاق">
-            </div>
-            <div class="swiper-slide">
-              <img src="{% static 'images/room-detail-3.jpg' %}" alt="تصویر اتاق">
-            </div>
-            <div class="swiper-slide">
-              <img src="{% static 'images/room-detail-4.jpg' %}" alt="تصویر اتاق">
-            </div>
-            <div class="swiper-slide">
-              <img src="{% static 'images/room-detail-5.jpg' %}" alt="تصویر اتاق">
-            </div>
+            {% endfor %}
           </div>
         </div>
       </div>
       
       <!-- Room Info -->
       <div class="room-header">
-        <div class="room-price-tag">۱,۲۰۰,۰۰۰ تومان / شب</div>
-        <h1 class="mb-2">اتاق دبل لوکس</h1>
+        <div class="room-price-tag" style="display: block; color: black; background-color: grey; font-weight: bold; font-size: 1.5rem;"> {{ room.price_per_night|intcomma }} قیمت بابت هر شب اقامت:   تومان  </div>
+        <h1 class="mb-2">{{room.title}}</h1>
         
         <div class="room-meta">
           <div class="room-meta-item">
-            <i class="fas fa-bed"></i> تخت دبل کینگ
+            <i class="fas fa-bed"></i>  {{room.bed_type}}
           </div>
           <div class="room-meta-item">
-            <i class="fas fa-ruler-combined"></i> ۳۵ متر مربع
+            <i class="fas fa-ruler-combined"></i>  متر مربع {{room.size}}
           </div>
           <div class="room-meta-item">
-            <i class="fas fa-users"></i> ظرفیت ۲ نفر
+            <i class="fas fa-users"></i> {{room.capacity}} نفر
           </div>
           <div class="room-meta-item">
-            <i class="fas fa-mountain"></i> منظره شهر
+            <i class="fas fa-mountain"></i>   منظره:  {{room.view}} 
           </div>
         </div>
         
         <p class="room-description">
-          اتاق دبل لوکس هتل آسمان با منظره زیبای شهر، فضایی دنج و آرام برای استراحت و تجدید قوا ایجاد می‌کند. این اتاق با مساحت ۳۵ متر مربع، مجهز به تخت دبل کینگ، حمام اختصاصی با وان و سرویس فرنگی، اینترنت پرسرعت، میز کار، تلویزیون ال‌سی‌دی با شبکه‌های کابلی، سیستم تهویه مطبوع و گاوصندوق اختصاصی است. 
-          
-          مهمانان می‌توانند از خدمات صبحانه‌ی رایگان و سرویس اتاق ۲۴ ساعته بهره‌مند شوند. این اتاق همچنین دسترسی به امکانات رفاهی هتل شامل استخر، سونا و فیتنس را میسر می‌سازد.
+        {{room.description}}
         </p>
       </div>
       
       <!-- Room Features -->
       <div class="room-features">
         <h3 class="feature-title">امکانات و ویژگی‌ها</h3>
-        <div class="features-
+        <div class="features-list">
+          {% for amenity in room.amenities.all %}
+          <div class="feature-item">
+            <i class="fas fa-check"></i> {{ amenity.name }}
+          </div>
+          {% empty %}
+          <p>امکاناتی ثبت نشده است.</p>
+          {% endfor %}
+        </div>
+        {% if room.features %}
+        <div class="features-list" style="margin-top: 1rem;">
+          <div class="feature-item">
+            <i class="fas fa-star"></i> {{ room.features|linebreaksbr|safe }}
+          </div>
+        </div>
+        {% endif %}
+      </div>
+{% endblock %}
 

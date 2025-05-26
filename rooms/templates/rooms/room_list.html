@@ -6,6 +6,45 @@
 {% block extra_head %}
 <style>
   /* Specific styles for room list page */
+  /* Room Card Styles */
+  .room-card {
+    border: 1px solid #e1e9f6;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+    background-color: white;
+    transition: var(--transition-normal);
+    position: relative;
+  }
+
+  .room-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-md);
+  }
+
+  .room-card-img img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    display: block;
+  }
+
+  .room-card-body {
+    padding: 1rem;
+  }
+
+  .room-price {
+    position: absolute;
+    bottom: 15px;
+    right: 15px;
+    background-color: var(--primary-color);
+    color: white;
+    padding: 5px 12px;
+    border-radius: 30px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    z-index: 2;
+  }
   .room-list-header {
     background-color: var(--light-color);
     padding: 3rem 0;
@@ -398,6 +437,8 @@
             </div>
           </div>
           
+          <input type="hidden" name="sort" value="{{ request.GET.sort }}">
+          <input type="hidden" name="page" value="{{ page_obj.number }}">
           <button type="submit" class="btn btn-primary w-100">اعمال فیلترها</button>
         </form>
       </div>
@@ -440,9 +481,10 @@
               <div class="room-card-body">
                 <h3 class="room-card-title">{{ room.name }}</h3>
                 <div class="room-card-features">
-                  <div class="room-feature"><i class="fas fa-bed"></i> {{ room.get_bed_type_display }}</div>
+                  <div class="room-feature"><i class="fas fa-bed"></i> {{ room.bed_type }}</div>
                   <div class="room-feature"><i class="fas fa-ruler-combined"></i> {{ room.size }} متر مربع</div>
                   <div class="room-feature"><i class="fas fa-users"></i> {{ room.capacity }} مهمان</div>
+                  <div class="room-feature"><i class="fa-solid fa-coins"></i>قیمت هر شب اقامت : {{room.price_per_night|intcomma}}</div>
                 </div>
                 <p class="room-card-text">{{ room.description|truncatechars:120 }}</p>
                 <div class="room-card-footer d-flex">
@@ -466,7 +508,7 @@
         <ul class="pagination">
           {% if page_obj.has_previous %}
             <li class="page-item">
-              <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="قبلی">
+              <a class="page-link" href="?{% if request.GET.room_type %}room_type={{ request.GET.room_type }}&amp;{% endif %}{% if request.GET.capacity %}capacity={{ request.GET.capacity }}&amp;{% endif %}{% if request.GET.sort %}sort={{ request.GET.sort }}&amp;{% endif %}page={{ page_obj.previous_page_number }}" aria-label="قبلی">
                 <i class="fas fa-chevron-right"></i>
               </a>
             </li>
@@ -476,13 +518,15 @@
             {% if page_obj.number == num %}
               <li class="page-item active"><a class="page-link" href="#">{{ num }}</a></li>
             {% else %}
-              <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+              <li class="page-item">
+                <a class="page-link" href="?{% if request.GET.room_type %}room_type={{ request.GET.room_type }}&amp;{% endif %}{% if request.GET.capacity %}capacity={{ request.GET.capacity }}&amp;{% endif %}{% if request.GET.sort %}sort={{ request.GET.sort }}&amp;{% endif %}page={{ num }}">{{ num }}</a>
+              </li>
             {% endif %}
           {% endfor %}
 
           {% if page_obj.has_next %}
             <li class="page-item">
-              <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="بعدی">
+              <a class="page-link" href="?{% if request.GET.room_type %}room_type={{ request.GET.room_type }}&amp;{% endif %}{% if request.GET.capacity %}capacity={{ request.GET.capacity }}&amp;{% endif %}{% if request.GET.sort %}sort={{ request.GET.sort }}&amp;{% endif %}page={{ page_obj.next_page_number }}" aria-label="بعدی">
                 <i class="fas fa-chevron-left"></i>
               </a>
             </li>

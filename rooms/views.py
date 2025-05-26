@@ -50,7 +50,33 @@ def room_list_view(request):
     paginator = Paginator(rooms, 6)     #number of rooms in each page
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
-    return render(request, 'rooms/room_list.html', {'page_obj':page_obj})
+    
+    # فیلتر نوع اتاق
+    room_type = request.GET.get('room_type')
+    if room_type:
+        rooms = rooms.filter(room_type=room_type)
+
+    # فیلتر ظرفیت
+    capacity = request.GET.get('capacity')
+    if capacity:
+        rooms = rooms.filter(capacity=capacity)
+
+    # فیلتر امکانات
+    amenities = request.GET.getlist('amenities')
+    if amenities:
+        for amenity in amenities:
+            rooms = rooms.filter(amenities__name=amenity)
+
+    paginator = Paginator(rooms, 6)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    return render(request, 'rooms/room_list.html', {
+        'page_obj': page_obj,
+        'selected_room_type': room_type,
+        'selected_capacity': capacity,
+        'selected_amenities': amenities,
+    })
 
 
 @manager_required(login_url=reverse_lazy('login'))
