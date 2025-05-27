@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block title %}پنل کارکنان{% endblock %}
+{% load static %}
+{% load humanize %}
+{% block content %}
+<h2>📋 داشبورد کارکنان</h2>
+<p>به پنل کارکنان خوش آمدید.</p>
+<div style="display: flex; flex-wrap: wrap; gap: 10px;">
+    <a href="{% url 'staff_booking_list' %}">
+        <button style="padding:10px 20px; background-color:#0288d1; color:white; border:none; border-radius:5px;">
+        مشاهده رزروها
+        </button>
+        </a>
+    <a href="{% url 'staff_service_list' %}">
+        <button style="padding:10px 20px; background-color:#d32f2f; color:white; border:none; border-radius:5px;">
+        مشاهده خدمات
+        </button>
+        </a>
+    <a href="{% url 'staff_room_list' %}">
+        <button style="padding:10px 20px; background-color:#388e3c; color:white; border:none; border-radius:5px;">
+            مشاهده اتاق ها
+        </button>
+    </a>
+    </div>
+{% endblock %}

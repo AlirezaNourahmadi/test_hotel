@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% block title %}مدیریت کارکنان{% endblock %}
+{% block content %}
+<h2>مدیریت کارکنان</h2>
+<p>به صفحه مدیریت کارکنان خوش آمدید.</p>
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">
+            <h3>اضافه کردن کارمند جدید</h3>
+            <form method="post" action="{% url 'manager_staff_add' %}">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" class="btn btn-primary">اضافه کردن</button>
+            </form>
+        </div>
+        <div class="col-md-6">
+            <h3>لیست کارمندان</h3>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>نام</th>
+                        <th>ایمیل</th>
+                        <th>نقش</th>
+                        <th>عملیات</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        {% for staff in staff_members %}
+                        <tr>
+                            <td>{{ staff.first_name }} {{ staff.last_name }}</td>
+                            <td>{{ staff.email }}</td>
+                            <td>{{ staff.role }}</td>
+                            <td>
+                                <a href="{% url 'manager_staff_update' staff.id %}" class="btn btn-primary">ویرایش</a>
+                                <a href="{% url 'manager_staff_delete' staff.id %}" class="btn btn-danger">حذف</a>
+                            </td>
+                            </tr>
+                            {% endfor %}
+                    </tbody>
+                    </thead>
+                    </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

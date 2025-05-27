@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block title %}ویرایش کارمند{% endblock %}
+{% block content %}
+<h2>ویرایش کارمند</h2>
+<form method="post" action="{% url 'manager_staff_update' staff_member.id %}">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-primary">ویرایش</button>
+</form>
+{% endblock %}

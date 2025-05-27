@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block title %}مدیریت اتاق‌ها{% endblock %}
+{% block content %}
+<h2>مدیریت اتاق‌ها</h2>
+<p>لیست اتاق‌های هتل آسمان</p>
+<table>
+    <thead>
+        <tr>
+            <th>نام اتاق</th>
+            <th>نوع اتاق</th>
+            <th>قیمت</th>
+            <th>عملیات</th>
+    </tr>
+    </thead>
+    <tbody>
+        {% for room in rooms %}
+        <tr>
+            <td>{{ room.name }}</td>
+            <td>{{ room.room_type }}</td>
+            <td>{{ room.price }}</td>
+            <td>
+                <a href="{% url 'manager_room_update' room.id %}">ویرایش</a> |
+                <a href="{% url 'manager_room_delete' room.id %}">حذف</a>
+                <a href="{% url 'manager_room_add' %}">ساخت اتاق جدید </a>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+        </table>
+{% endblock %}

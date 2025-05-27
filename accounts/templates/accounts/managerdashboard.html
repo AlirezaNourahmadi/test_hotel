@@ -2,22 +2,22 @@
 {% block title %}پنل مدیر{% endblock %}
 {% block content %}
 <h2>📋 داشبورد مدیر</h2>
-<p>شما به عنوان مدیر وارد شده‌اید.</p>
+<p> به داشبورد مدیریت خوش آمدید</p>
 
 <div style="display: flex; flex-wrap: wrap; gap: 10px;">
-  <a href="{% url 'room_list' %}">
+  <a href="{% url 'manager_room_list' %}">
     <button style="padding:10px 20px; background-color:#0288d1; color:white; border:none; border-radius:5px;">
       مدیریت اتاق‌ها
     </button>
   </a>
 
-  <a href="{% url 'service_list' %}">
+  <a href="{% url 'manager_service_list' %}">
     <button style="padding:10px 20px; background-color:#d32f2f; color:white; border:none; border-radius:5px;">
       مدیریت خدمات
     </button>
   </a>
 
-  <a href="{% url 'staff_dashboard' %}">
+  <a href="{% url 'manager_staff_management' %}">
     <button style="padding:10px 20px; background-color:#388e3c; color:white; border:none; border-radius:5px;">
       پنل مدیریت کارکنان
     </button>
