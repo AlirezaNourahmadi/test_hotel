@@ -30,7 +30,7 @@
           <a class="nav-link" href="{% url 'about_us' %}"><i class="fas fa-info-circle"></i> درباره ما</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#contact"><i class="fas fa-envelope"></i> تماس با ما</a>
+          <a class="nav-link" href="{% url "contact_us" %}"><i class="fas fa-envelope"></i> تماس با ما</a>
         </li>
         
         {% if user.is_authenticated %}
@@ -39,20 +39,24 @@
               <i class="fas fa-user-circle"></i> {{ user.username }}
             </a>
             <ul class="dropdown-menu dropdown-menu-end">
-              <li><a class="dropdown-item" href="{% url 'my_bookings' %}"><i class="fas fa-calendar-check"></i> رزروهای من</a></li>
-              
-              {% if user_roles.is_staff %}
-                <li><hr class="dropdown-divider"></li>
-                <li><a class="dropdown-item" href="{% url 'staff_dashboard' %}"><i class="fas fa-tasks"></i> پنل کارمندان</a></li>
-                <li><a class="dropdown-item" href="{% url 'service_list' %}"><i class="fas fa-concierge-bell"></i> مدیریت خدمات</a></li>
-              {% endif %}
-              
               {% if user_roles.is_manager %}
+                <li><a class="dropdown-item" href="{% url 'manager_booking_list' %}"><i class="fas fa-calendar-check"></i> مشاهده رزرو ها</a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item" href="{% url 'manager_service_list' %}"><i class="fas fa-concierge-bell"></i> مدیریت خدمات مدیریت</a></li>
                 <li><hr class="dropdown-divider"></li>
                 <li><a class="dropdown-item" href="{% url 'manager_dashboard' %}"><i class="fas fa-chart-line"></i> پنل مدیریت</a></li>
-                <li><a class="dropdown-item" href="{% url 'room_list' %}"><i class="fas fa-door-open"></i> مدیریت اتاق‌ها</a></li>
-              {% endif %}
+                <li><a class="dropdown-item" href="{% url 'manager_room_list' %}"><i class="fas fa-door-open"></i> مدیریت اتاق‌ها مدیر</a></li>
+              {% elif user_roles.is_staff %}
+                <li><a class="dropdown-item" href="{% url 'staff_booking_list' %}"><i class="fas fa-calendar-check"></i> مشاهده رزرو ها</a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item" href="{% url 'staff_dashboard' %}"><i class="fas fa-tasks"></i> پنل کارمندان</a></li>
+                <li><a class="dropdown-item" href="{% url 'staff_service_list' %}"><i class="fas fa-concierge-bell"></i> مدیریت خدمات</a></li>
               
+              {% elif user_roles.is_guest%}
+                <li><a class="dropdown-item" href="{% url 'my_bookings' %}"><i class="fas fa-calendar-check"></i> رزروهای من</a></li>
+                
+
+              {% endif %}
               <li><hr class="dropdown-divider"></li>
               <li><a class="dropdown-item" href="{% url 'logout' %}"><i class="fas fa-sign-out-alt"></i> خروج</a></li>
             </ul>

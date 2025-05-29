@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-5">
+    <h2 class="mb-4">جزئیات خدمت</h2>
+    <div class="card" style="width: 18rem;" >
+        <div class="card-body" style="background-color: #f7f7f7;">
+            <h5 class="card-title">اطلاعات خدمت</h5>
+            <p class="card-text">شماره اتاق: {{ service.room.title }}</p>
+            <p class="card-text">اختصاص داده شده به: {{ service.assigned_to }}</p>
+            <p class="card-text">عنوان خدمت: {{ service.service_type }}</p>
+            <p class="card-text">توضیحات: {{ service.description }}</p>
+            <p class="card-text">وضعیت: {%if service.done == False %}
+                در حال انجام
+                {% elif service.done == True %}
+                انجام شده
+                {% endif %}
+            </p>
+            <p class="card-text">تاریخ ثبت: {{ service.requested_at|date:"Y-m-d H:i" }}</p>
+            <a href="{% url 'manager_service_list' %}" class="btn btn-secondary">بازگشت</a>
+            <a href="{% url "manager_service_delete" service.id %}" class="btn btn-danger">حذف</a>
+            <a href="{% url "manager_service_update" service.id %}" class="btn btn-primary">ویرایش</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}

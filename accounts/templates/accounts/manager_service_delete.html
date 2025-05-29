@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-5" style="max-width: 800px;" >
+    <div class="card" >
+        <div class="card-body" style="background-color: #f7f7f7;" >
+            <h5 class="card-title">حذف خدمت</h5>
+            <p class="card-text">آیا از حذف خدمت "{{ service.service_type }}" اطمینان دارید؟</p>
+            <form method="post">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger">حذف</button>
+                <a href="{% url 'manager_service_list' %}" class="btn btn-secondary">بازگشت</a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

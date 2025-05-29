@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block title %}مدیریت اتاق‌ها{% endblock %}
+{% block content %}
+<div class="container mt-5">
+    <h2 class="mb-4">جزئیات اتاق</h2>
+    <div class="card" style="width: 18rem;">
+        <div class="card-body" style="background-color: #f7f7f7;">
+            <h5 class="card-title">اطلاعات اتاق</h5>
+            <p class="card-text">نام اتاق: {{ room.title }}</p>
+            <p class="card-text">نوع اتاق: {{ room.room_type }}</p>
+            <p class="card-text">قیمت: {{ room.price_per_night }} تومان</p>
+            <p class="card-text">توضیحات: {{ room.description }}</p>
+            <p class="card-text"> وضعیت: {%if room.is_available == True %}
+                در دسترس
+                {% elif room.is_available == False %}
+                در دسترس نیست
+                {% endif %}
+                </p>
+            <a href="{% url 'manager_room_list' %}" class="btn btn-secondary">بازگشت</a>
+            <a href="{% url 'manager_room_update' room.id %}" class="btn btn-primary">ویرایش</a>
+            <a href="{% url 'manager_room_delete' room.id %}" class="btn btn-danger">حذف</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

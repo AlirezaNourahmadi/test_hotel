@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row" style="justify-content: center;">
+        <div class="col-md-6 offset-md-3" >
+            <div class="card" style="width: 18rem;">
+                <div class="card-body" style="background-color: #f7f7f7;">
+                    <h2 class="card-title">حذف اتاق</h2>
+                    <p class="card-text">آیا از حذف اتاق "{{ room.title }}" مطمئن هستید؟</p>
+                    <form method="post">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger">حذف</button>
+                        <a href="{% url 'manager_room_list' %}" class="btn btn-secondary">بازگشت</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+    

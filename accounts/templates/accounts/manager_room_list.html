@@ -3,9 +3,9 @@
 {% block content %}
 <h2>مدیریت اتاق‌ها</h2>
 <p>لیست اتاق‌های هتل آسمان</p>
-<table>
-    <thead>
-        <tr>
+<table class="table table-striped">
+    <thead class="thead-dark">
+        <tr class="table-dark">
             <th>نام اتاق</th>
             <th>نوع اتاق</th>
             <th>قیمت</th>
@@ -15,13 +15,14 @@
     <tbody>
         {% for room in rooms %}
         <tr>
-            <td>{{ room.name }}</td>
+            <td>{{ room.title }}</td>
             <td>{{ room.room_type }}</td>
-            <td>{{ room.price }}</td>
+            <td>{{ room.price_per_night }}تومان</td>
             <td>
-                <a href="{% url 'manager_room_update' room.id %}">ویرایش</a> |
-                <a href="{% url 'manager_room_delete' room.id %}">حذف</a>
-                <a href="{% url 'manager_room_add' %}">ساخت اتاق جدید </a>
+                <a href="{% url 'manager_room_detail' room.id %}" class="btn btn-primary">نمایش</a> |
+                <a href="{% url 'manager_room_update' room.id %}" class="btn btn-secondary">ویرایش</a> |
+                <a href="{% url 'manager_room_delete' room.id %}" class="btn btn-danger">حذف</a> |
+                <a href="{% url 'manager_room_add' %}" class="btn btn-success">ساخت اتاق جدید </a>
                 </td>
             </tr>
         {% endfor %}

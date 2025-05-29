@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %} لیست خدمات {% endblock title %}
+{% block content %}
+<h3>لیست خدمات</h3>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>شماره اتاق</th>
+            <th>اختصاص داده شده به</th>
+            <th>عنوان خدمت</th>
+            <th>توضیحات</th>
+            <th>وضعیت</th>
+            <th>تاریخ ثبت</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for service in services %}
+            <tr>
+                <td>{{ service.room.title }}</td>
+                <td>{{service.assigned_to}}</td>
+                <td>{{ service.service_type }}</td>
+                <td>{{ service.description }}</td>
+                <td>
+                    {% if service.done == False %}
+                        در حال انجام
+                    {% elif service.done == True %}
+                        انجام شده
+                    {% endif %}
+                </td>
+                <td>{{ service.requested_at|date:"Y-m-d H:i" }}</td>
+                <td>
+                    <a href="{% url 'manager_service_detail' service.id %}" class="btn btn-primary">مشاهده</a>
+            </tr>
+        {% empty %}
+            <tr>
+                <td colspan="5">هیچ خدمتی ثبت نشده است.</td>
+            </tr>
+            <tr>
+                <td colspan="5" class="text-center">
+                    <a href="{% url 'manager_service_add' %}" class="btn btn-primary mt-3">افزودن خدمت جدید</a>
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock content %}

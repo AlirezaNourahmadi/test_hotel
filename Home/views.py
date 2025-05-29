@@ -10,3 +10,6 @@ def home_view(request):
 
 def about_us_view(request):
     return render(request, 'about_us.html')
+
+def contact_us_view(request):
+    return render(request, 'contact_us.html')

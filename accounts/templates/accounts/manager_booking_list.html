@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-5">
+    <h2 class="mb-4">لیست رزروها</h2>
+    <table class="table table-striped" id="table">
+        <thead class="thead-dark" style="background-color: #4CAF50; color: white;">
+            <tr class="table-dark">
+                <th>شماره رزرو</th>
+                <th>نام مسافر</th>
+                <th>شماره تلفن مسافر</th>
+                <th>تاریخ ورود</th>
+                <th>تاریخ خروج</th>
+                <th>تعداد نفرات</th>
+                <th>وضعیت</th>
+                <th>عملیات</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for booking in bookings %}
+            <tr>
+                <td>{{ booking.id }}</td>
+                <td>{{ booking.guest_name }}</td>
+                <td>{{ booking.guest_phone_number }}</td>
+                <td> {{booking.check_in}} </td>
+                <td> {{booking.check_out}} </td>
+                <td>{{ booking.number_of_guests }}</td>
+                <td>{%if booking.is_confirmed == True %}
+                    تایید شده
+                    {% elif booking.is_confirmed == False %}
+                    تایید نشده
+                    {% endif %}
+                </td>
+            {% endfor %}
+            </tr>
+        </tbody>
+    </table>
+</div>
+{% endblock %}

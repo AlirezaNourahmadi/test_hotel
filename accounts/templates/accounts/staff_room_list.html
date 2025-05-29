@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block title %}لیست اتاق ها{% endblock %}
+{% block content %}
+<h2>لیست اتاق ها</h2>
+<div class="row" style="margin-top: 20px;">
+    {% for room in rooms %}
+    <div class="col-md-4 mb-4"  style="background-color: #f7f7f7;">
+        <div class="card" style="width: 18rem;">
+            <div class="card-body" style="background-color: #f7f7f7;">
+                <h5 class="card-title">{{ room.title }}</h5>
+                <p class="card-text">نوع اتاق: {{ room.room_type }}</p>
+                <p class="card-text">قیمت: {{ room.price_per_night }} تومان</p>
+                <p class="card-text">توضیحات: {{ room.description }}</p>
+                <p class="card-text"> وضعیت: {%if room.is_available == True %}
+                    در دسترس
+                    {% elif room.is_available == False %}
+                    در دسترس نیست
+                    {% endif %}
+                    </p>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
